@@ -1,0 +1,16 @@
+{
+  "version": "4",
+  "specifiers": {
+    "npm:wikibase-sdk@*": "10.2.1"
+  },
+  "npm": {
+    "wikibase-sdk@10.2.1": {
+      "integrity": "sha512-HZIKW5iiH5OBaBFTXedrOxVftlkcw1jFpM8F4s9aWy9KBv2RPmRFA3J/01I054HzxcxJfMZS/QDjrKyyK0i3AA=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@1"
+    ]
+  }
+}
