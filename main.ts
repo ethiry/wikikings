@@ -1,7 +1,11 @@
-import { isEntityId, type ItemId  } from "npm:wikibase-sdk";
-import { getWikiObject  } from "./wikidata.ts";
+// import { isEntityId, ItemId  } from "npm:wikibase-sdk";
+// import { getWikiObject  } from "./wikidata.ts";
+// import { WikiHuman } from "./models/wikiHuman.ts";
+// import { WikiObject } from "./models/wikiObject.ts";
 import { WikiHuman } from "./models/wikiHuman.ts";
+import { Scenario1 } from "./scenarios.ts/scenario1.ts";
 
+/*
 const id = Deno.args[1] || 'Q7732';
 
 if (isEntityId(id)) {
@@ -17,5 +21,28 @@ if (isEntityId(id)) {
     console.log(wiki.Siblings);
   }
 }
+*/
 
-console.log('DONE')
+const scenario = new Scenario1('fr');
+const result = await scenario.run();
+
+console.log(result.size);
+const list = Array.from(result.values());
+const kings = list.filter(l => l.isKing);
+console.log(kings.length);
+kings.sort(HumanComparer);
+kings.forEach((k,i) => console.log(`${i}: ${k.toLongString()}`));
+console.log('DONE');
+
+function HumanComparer(a: WikiHuman, b:WikiHuman): number {
+  if (a.born && b.born) {
+    return a.born.getTime() - b.born.getTime();
+  }
+  if (a.born && !b.born) {
+    return -1;
+  }
+  if (!a.born && b.born) {
+    return 1;
+  }
+  return 0;
+}

@@ -10,25 +10,44 @@ import { InstanceOf, QualifierId, StatementId } from "./enums.ts";
 
 export class WikiUtils {
 
-  public static getStatement(item: Item, statementId: StatementId): ItemId {
+  public static getStatement(item: Item, statementId: StatementId): ItemId | undefined {
     if (item.claims) {
-      const claim = item.claims[statementId][0];
-      if (claim && claim.mainsnak.datatype === "wikibase-item") {
-        const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
-        return value.value.id;
+      const claims = item.claims[statementId];
+      if (claims) {
+        const claim = claims[0];
+        if (claim && claim.mainsnak.datatype === "wikibase-item") {
+          const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
+          return value.value.id;
+        }
       }
     }
-    throw new Deno.errors.InvalidData();
+    console.log(`For item=${item.id} no statement ${statementId}`);
+    return undefined;
+  }
+
+  public static getStatementDate(item: Item, statementId: StatementId): Date | undefined{
+    if (item.claims) {
+      const claims = item.claims[statementId];
+      if (claims) {
+        const claim = claims[0]
+        if (claim && claim.mainsnak.datatype === "time") {
+          return wikibaseTimeToDateObject((claim.mainsnak.datavalue as TimeSnakDataValue).value);
+        }
+      }
+    }
+    return undefined;
   }
 
   public static getStatements(item: Item, statementId: StatementId): ItemId[] {
     const result: ItemId[] = [];
     if (item.claims) {
       const claims = item.claims[statementId];
-      for (const claim of claims) {
-        if (claim && claim.mainsnak.datatype === "wikibase-item") {
-          const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
-          result.push(value.value.id);
+      if (claims) {
+        for (const claim of claims) {
+          if (claim && claim.mainsnak.datatype === "wikibase-item") {
+            const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
+            result.push(value.value.id);
+          }
         }
       }
     }

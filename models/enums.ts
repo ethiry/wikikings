@@ -11,6 +11,8 @@ export enum Statement {
 }
 
 export enum StatementId {
+  DateOfBirth = "P569",
+  DateOfDeath = "P570",
   Father = "P22",
   InstanceOf = "P31",
   PositionHeld = "P39",

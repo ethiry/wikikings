@@ -32,6 +32,6 @@ export async function getWikiObject(id: ItemId, language: WikimediaLanguageCode)
     Deno.writeTextFileSync(path, JSON.stringify(json));
   }
 
-  return WikiFactory.Create(json);
+  return await WikiFactory.Create(json);
 }
 
