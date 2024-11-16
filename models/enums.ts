@@ -14,6 +14,7 @@ export enum StatementId {
   DateOfBirth = "P569",
   DateOfDeath = "P570",
   Father = "P22",
+  Family = "P53",
   InstanceOf = "P31",
   PositionHeld = "P39",
   Sibling = "P3373",

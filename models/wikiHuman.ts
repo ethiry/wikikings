@@ -14,6 +14,7 @@ export class WikiHuman extends WikiObject {
   public positions?: Position[];
   public born?: Date;
   public dead?: Date;
+  public familyIds?: ItemId[];
 
   constructor(item: Item, language: WikimediaLanguageCode) {
     super(item, language);
@@ -22,6 +23,7 @@ export class WikiHuman extends WikiObject {
     this.dead = WikiUtils.getStatementDate(item, StatementId.DateOfDeath);
     this.fatherId = WikiUtils.getStatement(item, StatementId.Father);
     this.siblingsId = WikiUtils.getStatements(item, StatementId.Sibling);
+    this.familyIds = WikiUtils.getStatements(item, StatementId.Family);
   }
 
   public get reigns(): Position[] {
@@ -44,6 +46,9 @@ export class WikiHuman extends WikiObject {
     let result = this.toString();
     if (this.isKing) {
       result += " " + this.reigns.map(p => `<${p.label}:${p.start?.getFullYear()}-${p.end?.getFullYear()}>`).join("/");
+    }
+    if (this.familyIds) {
+      result += " *" + this.familyIds.join("*");
     }
     return result;
   }
