@@ -1,4 +1,6 @@
-import { 
+import {
+  Claim,
+  DataType, 
   Item, 
   ItemId,
   Qualifiers,
@@ -10,14 +12,17 @@ import { InstanceOf, QualifierId, StatementId } from "./enums.ts";
 
 export class WikiUtils {
 
+  private static claimhasValue(claim: Claim, datatype: DataType): boolean {
+    return claim && claim.mainsnak.datatype === datatype && claim.mainsnak.snaktype === "value"
+  }
+
   public static getStatement(item: Item, statementId: StatementId): ItemId | undefined {
     if (item.claims) {
       const claims = item.claims[statementId];
       if (claims) {
         const claim = claims[0];
-        if (claim && claim.mainsnak.datatype === "wikibase-item") {
-          const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
-          return value.value.id;
+        if (this.claimhasValue(claim, "wikibase-item")) {
+          return (claim.mainsnak.datavalue as WikibaseItemSnakDataValue).value.id;
         }
       }
     }
@@ -30,7 +35,7 @@ export class WikiUtils {
       const claims = item.claims[statementId];
       if (claims) {
         const claim = claims[0]
-        if (claim && claim.mainsnak.datatype === "time") {
+        if (this.claimhasValue(claim, "time")) {
           return wikibaseTimeToDateObject((claim.mainsnak.datavalue as TimeSnakDataValue).value);
         }
       }
@@ -44,9 +49,8 @@ export class WikiUtils {
       const claims = item.claims[statementId];
       if (claims) {
         for (const claim of claims) {
-          if (claim && claim.mainsnak.datatype === "wikibase-item") {
-            const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
-            result.push(value.value.id);
+          if (this.claimhasValue(claim, "wikibase-item")) {
+            result.push((claim.mainsnak.datavalue as WikibaseItemSnakDataValue).value.id);
           }
         }
       }

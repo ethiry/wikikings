@@ -30,8 +30,8 @@ console.log(result.size);
 const list = Array.from(result.values());
 const kings = list.filter(l => l.isKing);
 console.log(kings.length);
-kings.sort(HumanComparer);
-kings.forEach((k,i) => console.log(`${i}: ${k.toLongString()}`));
+list.sort(HumanComparer);
+list.forEach((k,i) => console.log(`${i}: ${k.toLongString()}`));
 console.log('DONE');
 
 function HumanComparer(a: WikiHuman, b:WikiHuman): number {

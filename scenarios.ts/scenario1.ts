@@ -3,7 +3,7 @@
 // if none, search among the siblings
 // repeat
 // stop at Huges capet (Q159575)
-// the result contains only Kings
+// the result contains only Kings and Kings' fathers line
 
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { getWikiObject } from "../wikidata.ts";
@@ -30,22 +30,32 @@ export class Scenario1 extends ScenarioBase{
 
   private Solution = new Map<ItemId, WikiHuman>();
 
-  private mustStop(id: ItemId): boolean {
+  protected override mustStop(id: ItemId): boolean {
     return (id === this.endId);
   }
 
-  private async browse(input: ItemId | WikiHuman | undefined, forceAdd = false) {
+  private getIdFromInput(input: ItemId | WikiHuman): ItemId {
+    return input instanceof WikiHuman ? input.id : input;
+  }
+
+  private async getHumanFromInput(input: ItemId | WikiHuman): Promise<WikiHuman | undefined> {
+    return input instanceof WikiHuman ? input : await this.getHuman(input);
+  }
+
+  private async browse(input: ItemId | WikiHuman | undefined, forceAdd: boolean) {
     if (!input) {
       console.log('browse null');
       return;
     }
     const logEntry = input instanceof WikiHuman ? 'browse ' + input.toString() : 'browse ' + input;
     console.log("start " + logEntry);
-    const wiki = input instanceof WikiHuman ? input : await this.getHuman(input);
+
+    const id = this.getIdFromInput(input);
+    if (this.Solution.has(id)) {
+      return;
+    }
+    const wiki = await this.getHumanFromInput(input);
     if (wiki) {
-      if (this.Solution.has(wiki.id)) {
-        return;
-      }
       console.log(`Found ${wiki.toString()}`);
       if (wiki.isKing || forceAdd) {
         if (!this.Solution.has(wiki.id)) {
@@ -61,31 +71,28 @@ export class Scenario1 extends ScenarioBase{
       const predecessors = wiki.positions?.filter(p => p.isKing && p.replaces) ?? [];
       if (predecessors.length) {
         for (const pred of predecessors ?? []) {
-          if (pred.replaces && !this.Solution.has(pred.replaces)) {
-            await this.browse(pred.replaces);
+          if (pred.replaces) {
+            await this.browse(pred.replaces, false);
           }
         }
       } else {
         // sibling king
-        for (const s of wiki?.siblingsId ?? []) {
-          const sk = await this.getHuman(s);
-          if (sk instanceof WikiHuman && sk.isKing && !this.Solution.has(sk.id)) {
-            await this.browse(sk);
+        for (const id of wiki?.siblingsId ?? []) {
+          const sib = await this.getHuman(id);
+          if (sib instanceof WikiHuman && sib.isKing) {
+            await this.browse(sib, false);
           }
         }
       }
 
       // father
-      // const father = await this.getHuman(wiki.fatherId);
-      // if (father) {
-      //   await this.browse(father, true);
-      // }      
+      await this.browse(wiki.fatherId, true);
     }
     console.log("end " + logEntry);
   }
   
   public async run(): Promise<Map<ItemId, WikiHuman>> {
-    await this.browse(this.startId);
+    await this.browse(this.startId, false);
     return this.Solution;
   }
 }

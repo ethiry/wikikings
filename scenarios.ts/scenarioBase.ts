@@ -9,4 +9,5 @@ export abstract class ScenarioBase {
   };
 
   public abstract run(): Promise<Map<ItemId, WikiHuman>>;
+  protected abstract mustStop(id: ItemId): boolean;
 }
