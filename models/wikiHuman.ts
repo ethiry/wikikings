@@ -7,6 +7,7 @@ import { StatementId } from "./enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiUtils } from "./wikiUtils.ts";
+import { formatDate } from "../common/utils.ts";
 
 export class WikiHuman extends WikiObject {
   public fatherId?: ItemId;
@@ -34,6 +35,14 @@ export class WikiHuman extends WikiObject {
     return this.reigns.length > 0;
   }
 
+  public get bornFormatted(): string {
+    return formatDate(this.born);
+  }
+
+  public get deadFormatted(): string {
+    return formatDate(this.dead);
+  }
+
   public override toString(): string {
     let result = `${this.label} (${this.id}) [${this.born?.getFullYear()}-${this.dead?.getFullYear()}]`;
     if (this.isKing) {
@@ -57,5 +66,13 @@ export class WikiHuman extends WikiObject {
     const human = new WikiHuman(item, language);
     human.positions = await Position.CreateList(item, language);
     return human;
+  }
+
+  public static get csvHeaderLine(): string {
+    return "ID,name,isKing,born,dead"
+  }
+
+  public get csvLine(): string {
+    return `${this.id},"${this.label}",${this.isKing},${this.bornFormatted},${this.deadFormatted}`;
   }
 }

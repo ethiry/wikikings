@@ -2,6 +2,7 @@
 // import { getWikiObject  } from "./wikidata.ts";
 // import { WikiHuman } from "./models/wikiHuman.ts";
 // import { WikiObject } from "./models/wikiObject.ts";
+import { saveScvFiles } from "./export.ts";
 import { WikiHuman } from "./models/wikiHuman.ts";
 import { Scenario1 } from "./scenarios.ts/scenario1.ts";
 
@@ -24,15 +25,22 @@ if (isEntityId(id)) {
 */
 
 const scenario = new Scenario1('fr');
-const result = await scenario.run();
+const solution = await scenario.run();
 
-console.log(result.size);
-const list = Array.from(result.values());
-const kings = list.filter(l => l.isKing);
+console.log(solution.size);
+const humans = Array.from(solution.values());
+const kings = humans.filter(l => l.isKing);
 console.log(kings.length);
-list.sort(HumanComparer);
-list.forEach((k,i) => console.log(`${i}: ${k.toLongString()}`));
+
+humans.sort(HumanComparer);
+Deno.writeTextFileSync('./notes/dump.json', JSON.stringify(humans));
+
+humans.forEach((k,i) => console.log(`${i+1}: ${k.toLongString()}`));
 console.log('DONE');
+
+
+await saveScvFiles(solution);
+console.log('CSV files created');
 
 function HumanComparer(a: WikiHuman, b:WikiHuman): number {
   if (a.born && b.born) {
