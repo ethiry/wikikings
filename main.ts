@@ -4,7 +4,7 @@
 // import { WikiObject } from "./models/wikiObject.ts";
 import { saveScvFiles } from "./export.ts";
 import { WikiHuman } from "./models/wikiHuman.ts";
-import { Scenario1 } from "./scenarios.ts/scenario1.ts";
+import { Scenario1 } from "./scenarios/scenario1.ts";
 
 /*
 const id = Deno.args[1] || 'Q7732';
