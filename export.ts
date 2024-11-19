@@ -4,10 +4,7 @@ import { formatDate } from "./common/utils.ts";
 import dayjs from "https://deno.land/x/deno_dayjs@v0.5.0/mod.ts";
 import { Config } from "./config.ts";
 
-async function writeLine(
-  outputWriter: WritableStreamDefaultWriter<Uint8Array>,
-  line: string
-) {
+async function writeLine(outputWriter: WritableStreamDefaultWriter<Uint8Array>, line: string) {
   const encoded = new TextEncoder().encode(line + "\n");
   await outputWriter.write(encoded);
 }
@@ -35,17 +32,13 @@ export async function saveScvFiles(solution: Map<ItemId, WikiHuman>) {
   const humans = Array.from(solution.values());
 
   // humans
-  await saveCsvFile(
-    "humans",
-    humans.map((h) => h.csvLine),
-    WikiHuman.csvHeaderLine
-  );
+  await saveCsvFile("humans", humans.map((h) => h.csvLine), WikiHuman.csvHeaderLine);
 
   // parent-child relationships
   await saveCsvFile(
     "parents",
     humans.filter((h) => h.fatherId).map((h) => `${h.fatherId},${h.id}`),
-    "parentId,childId"
+    "parentId,childId",
   );
 
   // siblings relationships
@@ -72,7 +65,7 @@ export async function saveScvFiles(solution: Map<ItemId, WikiHuman>) {
     h.positions?.forEach((p) => {
       if (p.isKing && p.end && p.replacedBy) {
         replacedBy.push(
-          `${h.id},${p.label},${formatDate(p.end)},${p.replacedBy}`
+          `${h.id},${p.label},${formatDate(p.end)},${p.replacedBy}`,
         );
       }
     });

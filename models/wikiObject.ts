@@ -12,9 +12,9 @@ export class WikiObject {
     this.id = item.id;
     this.label = this.getTranslated(language, item.labels) ?? this.id;
     this.description = this.getTranslated(language, item.descriptions) ?? this.id;
-    this.wikipediaLink = this.getWikipediaLinks(language, item.sitelinks)
+    this.wikipediaLink = this.getWikipediaLinks(language, item.sitelinks);
     if (item.aliases) {
-      this.aliases = item.aliases[language]?.map(a => a.value) ?? [];
+      this.aliases = item.aliases[language]?.map((a) => a.value) ?? [];
     }
   }
 
@@ -28,7 +28,10 @@ export class WikiObject {
     }
   }
 
-  private getTranslated(language: WikimediaLanguageCode, field?: Partial<Readonly<Record<string, Term>>>): string | undefined{
+  private getTranslated(
+    language: WikimediaLanguageCode,
+    field?: Partial<Readonly<Record<string, Term>>>,
+  ): string | undefined {
     let result: string | undefined = undefined;
     if (field) {
       result = field[language]?.value ?? field[fallBackLanguage]?.value;
@@ -36,4 +39,3 @@ export class WikiObject {
     return result;
   }
 }
-

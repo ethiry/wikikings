@@ -5,9 +5,7 @@ export class Config {
     const config = JSON.parse(Deno.readTextFileSync("./config.json"));
 
     if (!config.outputFolder) {
-      throw new Deno.errors.InvalidData(
-        'field "outputFolder" in missing from config.file'
-      );
+      throw new Deno.errors.InvalidData('field "outputFolder" in missing from config.file');
     }
     this._outputFolder = config.outputFolder;
   }

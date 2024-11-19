@@ -3,11 +3,11 @@ export enum InstanceOf {
   Human,
   NobleTitle,
   HistoricalPosition,
-};
+}
 
 export enum Statement {
   Unknown,
-  InstanceOf
+  InstanceOf,
 }
 
 export enum StatementId {
@@ -21,8 +21,8 @@ export enum StatementId {
 }
 
 export enum QualifierId {
- StartTime  = "P580",
- EndTime = "P582",
- Replaces = "P1365",
- ReplacedBy = "P1366",
+  StartTime = "P580",
+  EndTime = "P582",
+  Replaces = "P1365",
+  ReplacedBy = "P1366",
 }

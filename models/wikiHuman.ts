@@ -1,8 +1,4 @@
-import { 
-  Item, 
-  ItemId, 
-  WikimediaLanguageCode,
-} from "npm:wikibase-sdk";
+import { Item, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { StatementId } from "./enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
@@ -28,7 +24,7 @@ export class WikiHuman extends WikiObject {
   }
 
   public get reigns(): Position[] {
-    return this.positions?.filter(p => p.isKing) ?? []
+    return this.positions?.filter((p) => p.isKing) ?? [];
   }
 
   public get isKing(): boolean {
@@ -54,7 +50,8 @@ export class WikiHuman extends WikiObject {
   public toLongString(): string {
     let result = this.toString();
     if (this.isKing) {
-      result += " " + this.reigns.map(p => `<${p.label}:${p.start?.getFullYear()}-${p.end?.getFullYear()}>`).join("/");
+      result += " " +
+        this.reigns.map((p) => `<${p.label}:${p.start?.getFullYear()}-${p.end?.getFullYear()}>`).join("/");
     }
     if (this.familyIds) {
       result += " *" + this.familyIds.join("*");
@@ -69,7 +66,7 @@ export class WikiHuman extends WikiObject {
   }
 
   public static get csvHeaderLine(): string {
-    return "ID,name,isKing,born,dead"
+    return "ID,name,isKing,born,dead";
   }
 
   public get csvLine(): string {

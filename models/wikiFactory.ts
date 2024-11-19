@@ -4,7 +4,6 @@ import { WikiUtils } from "./wikiUtils.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiHuman } from "./wikiHuman.ts";
 import { Item, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { Position } from "./position.ts";
 
 export class WikiFactory {
   public static async Create(input: object, language: WikimediaLanguageCode = defaultLanguage): Promise<WikiObject> {

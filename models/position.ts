@@ -1,10 +1,4 @@
-import { 
-  Item,
-  ItemId,
-  Qualifiers, 
-  WikimediaLanguageCode,
-  WikibaseItemSnakDataValue,
-} from "npm:wikibase-sdk";
+import { Item, ItemId, Qualifiers, WikibaseItemSnakDataValue, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { QualifierId } from "./enums.ts";
 import { StatementId } from "./enums.ts";
 import { WikiUtils } from "./wikiUtils.ts";
@@ -12,7 +6,7 @@ import { WikiObject } from "./wikiObject.ts";
 import { getWikiObject } from "../wikidata.ts";
 
 export class Position {
-  private wiki: WikiObject
+  private wiki: WikiObject;
   public replaces?: ItemId;
   public replacedBy?: ItemId;
   public start?: Date;
@@ -20,12 +14,12 @@ export class Position {
   public isKing: boolean;
 
   private constructor(wiki: WikiObject, qualifiers: Qualifiers) {
-      this.wiki = wiki;
-      this.start = WikiUtils.getDateQualifier(QualifierId.StartTime, qualifiers);
-      this.end = WikiUtils.getDateQualifier(QualifierId.EndTime, qualifiers);
-      this.replaces = WikiUtils.getItemQualifier(QualifierId.Replaces, qualifiers);
-      this.replacedBy = WikiUtils.getItemQualifier(QualifierId.ReplacedBy, qualifiers);
-      this.isKing = Position.kingsPositions.includes(this.wiki.id);
+    this.wiki = wiki;
+    this.start = WikiUtils.getDateQualifier(QualifierId.StartTime, qualifiers);
+    this.end = WikiUtils.getDateQualifier(QualifierId.EndTime, qualifiers);
+    this.replaces = WikiUtils.getItemQualifier(QualifierId.Replaces, qualifiers);
+    this.replacedBy = WikiUtils.getItemQualifier(QualifierId.ReplacedBy, qualifiers);
+    this.isKing = Position.kingsPositions.includes(this.wiki.id);
   }
 
   public get label(): string {
@@ -37,7 +31,7 @@ export class Position {
       const positionsHeld = item.claims[StatementId.PositionHeld];
       if (positionsHeld) {
         const result: Position[] = [];
-        const claims = positionsHeld.filter(claim => claim && claim.mainsnak.datatype === "wikibase-item");
+        const claims = positionsHeld.filter((claim) => claim && claim.mainsnak.datatype === "wikibase-item");
         for (const claim of claims) {
           if (claim.qualifiers) {
             const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
@@ -54,10 +48,10 @@ export class Position {
 
   private static comparer(a: Position, b: Position): number {
     if (a.start && b.start) {
-      return a.start.getTime() - b.start.getTime()
+      return a.start.getTime() - b.start.getTime();
     }
     return a.wiki.label.localeCompare(b.wiki.label);
   }
 
-  private static kingsPositions = ['Q22923081', 'Q18384454', 'Q3439798', 'Q3439814', 'Q3439814'];
+  private static kingsPositions = ["Q22923081", "Q18384454", "Q3439798", "Q3439814", "Q3439814"];
 }

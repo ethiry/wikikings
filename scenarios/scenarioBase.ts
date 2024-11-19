@@ -6,7 +6,7 @@ export abstract class ScenarioBase {
 
   constructor(language: WikimediaLanguageCode) {
     this.language = language;
-  };
+  }
 
   public abstract run(): Promise<Map<ItemId, WikiHuman>>;
   protected abstract mustStop(id: ItemId): boolean;

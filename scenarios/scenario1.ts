@@ -10,13 +10,13 @@ import { getWikiObject } from "../wikidata.ts";
 import { WikiHuman } from "../models/wikiHuman.ts";
 import { ScenarioBase } from "./scenarioBase.ts";
 
-export class Scenario1 extends ScenarioBase{
+export class Scenario1 extends ScenarioBase {
   constructor(language: WikimediaLanguageCode) {
     super(language);
-  };
+  }
 
-  private startId: ItemId = 'Q7771'; // Louis-Philippe
-  private endId: ItemId = 'Q159575'; // Huges Capet
+  private startId: ItemId = "Q7771"; // Louis-Philippe
+  private endId: ItemId = "Q159575"; // Huges Capet
 
   private async getHuman(id: ItemId | undefined): Promise<WikiHuman | undefined> {
     if (id) {
@@ -44,10 +44,10 @@ export class Scenario1 extends ScenarioBase{
 
   private async browse(input: ItemId | WikiHuman | undefined, forceAdd: boolean) {
     if (!input) {
-      console.log('browse null');
+      console.log("browse null");
       return;
     }
-    const logEntry = input instanceof WikiHuman ? 'browse ' + input.toString() : 'browse ' + input;
+    const logEntry = input instanceof WikiHuman ? "browse " + input.toString() : "browse " + input;
     console.log("start " + logEntry);
 
     const id = this.getIdFromInput(input);
@@ -68,7 +68,7 @@ export class Scenario1 extends ScenarioBase{
       }
 
       // predecessors
-      const predecessors = wiki.positions?.filter(p => p.isKing && p.replaces) ?? [];
+      const predecessors = wiki.positions?.filter((p) => p.isKing && p.replaces) ?? [];
       if (predecessors.length) {
         for (const pred of predecessors ?? []) {
           if (pred.replaces) {
@@ -90,7 +90,7 @@ export class Scenario1 extends ScenarioBase{
     }
     console.log("end " + logEntry);
   }
-  
+
   public async run(): Promise<Map<ItemId, WikiHuman>> {
     await this.browse(this.startId, false);
     return this.Solution;
