@@ -24,25 +24,24 @@ if (isEntityId(id)) {
 }
 */
 
-const scenario = new Scenario1('fr');
+const scenario = new Scenario1("fr");
 const solution = await scenario.run();
 
 console.log(solution.size);
 const humans = Array.from(solution.values());
-const kings = humans.filter(l => l.isKing);
+const kings = humans.filter((l) => l.isKing);
 console.log(kings.length);
 
 humans.sort(HumanComparer);
-Deno.writeTextFileSync('./notes/dump.json', JSON.stringify(humans));
+Deno.writeTextFileSync("./notes/dump.json", JSON.stringify(humans));
 
-humans.forEach((k,i) => console.log(`${i+1}: ${k.toLongString()}`));
-console.log('DONE');
-
+humans.forEach((k, i) => console.log(`${i + 1}: ${k.toLongString()}`));
+console.log("DONE");
 
 await saveScvFiles(solution);
-console.log('CSV files created');
+console.log("CSV files created");
 
-function HumanComparer(a: WikiHuman, b:WikiHuman): number {
+function HumanComparer(a: WikiHuman, b: WikiHuman): number {
   if (a.born && b.born) {
     return a.born.getTime() - b.born.getTime();
   }

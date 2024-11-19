@@ -1,16 +1,19 @@
-import { ItemId } from "npm:wikibase-sdk";import { WikiHuman } from "./models/wikiHuman.ts";
+import { ItemId } from "npm:wikibase-sdk";
+import { WikiHuman } from "./models/wikiHuman.ts";
 import { formatDate } from "./common/utils.ts";
 import dayjs from "https://deno.land/x/deno_dayjs@v0.5.0/mod.ts";
+import { Config } from "./config.ts";
 
-const folder = "/Users/manu/Library/Application\ Support/Neo4j\ Desktop/Application/relate-data/dbmss/dbms-a7a2dfde-c9d2-412b-b102-c312ad57ff6b/import";
-
-async function writeLine(outputWriter: WritableStreamDefaultWriter<Uint8Array>, line: string) {
+async function writeLine(
+  outputWriter: WritableStreamDefaultWriter<Uint8Array>,
+  line: string
+) {
   const encoded = new TextEncoder().encode(line + "\n");
   await outputWriter.write(encoded);
 }
 
 async function saveCsvFile(filename: string, lines: string[], header?: string) {
-  const output = await Deno.open(`${folder}/${filename}.csv`, {
+  const output = await Deno.open(`${Config.outputFolder}/${filename}.csv`, {
     create: true,
     write: true,
     truncate: true,
@@ -28,43 +31,51 @@ async function saveCsvFile(filename: string, lines: string[], header?: string) {
   await outputWriter.close();
 }
 
-
-
 export async function saveScvFiles(solution: Map<ItemId, WikiHuman>) {
   const humans = Array.from(solution.values());
 
   // humans
-  await saveCsvFile("humans", humans.map(h => h.csvLine), WikiHuman.csvHeaderLine);
+  await saveCsvFile(
+    "humans",
+    humans.map((h) => h.csvLine),
+    WikiHuman.csvHeaderLine
+  );
 
   // parent-child relationships
-  await saveCsvFile("parents",
-                    humans.filter(h => h.fatherId)
-                          .map(h => `${h.fatherId},${h.id}`),
-                    "parentId,childId",);
-  
+  await saveCsvFile(
+    "parents",
+    humans.filter((h) => h.fatherId).map((h) => `${h.fatherId},${h.id}`),
+    "parentId,childId"
+  );
+
   // siblings relationships
   const siblings = new Array<string>();
   for (const older of humans) {
     if (older.born && older.siblingsId) {
       for (const yid of older.siblingsId) {
         const younger = solution.get(yid);
-        if (younger && younger.born && dayjs(older.born).isBefore(dayjs(younger.born))) {
+        if (
+          younger &&
+          younger.born &&
+          dayjs(older.born).isBefore(dayjs(younger.born))
+        ) {
           siblings.push(`${older.id},${younger.id}`);
         }
-      };
+      }
     }
   }
-  await saveCsvFile("siblings", siblings);
-
+  await saveCsvFile("siblings", siblings, "oderId,youngerId");
 
   // replaced_by relationships
   const replacedBy = new Array<string>();
-  humans.forEach(h => {
-    h.positions?.forEach(p => {
+  humans.forEach((h) => {
+    h.positions?.forEach((p) => {
       if (p.isKing && p.end && p.replacedBy) {
-        replacedBy.push(`${h.id},${p.label},${formatDate(p.end)},${p.replacedBy}`);
+        replacedBy.push(
+          `${h.id},${p.label},${formatDate(p.end)},${p.replacedBy}`
+        );
       }
-    })
+    });
   });
 
   await saveCsvFile("replacedBy", replacedBy, "id,label,date,successorId");
