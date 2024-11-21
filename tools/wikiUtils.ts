@@ -8,7 +8,7 @@ import {
   WikibaseItemSnakDataValue,
   wikibaseTimeToDateObject,
 } from "npm:wikibase-sdk";
-import { InstanceOf, QualifierId, StatementId } from "./enums.ts";
+import { InstanceOf, QualifierId, StatementId } from "@/common/enums.ts";
 
 export class WikiUtils {
   private static claimhasValue(claim: Claim, datatype: DataType): boolean {

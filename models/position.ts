@@ -1,9 +1,8 @@
 import { Item, ItemId, Qualifiers, WikibaseItemSnakDataValue, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { QualifierId } from "./enums.ts";
-import { StatementId } from "./enums.ts";
-import { WikiUtils } from "./wikiUtils.ts";
+import { QualifierId, StatementId } from "@/common/enums.ts";
+import { WikiUtils } from "@/tools/wikiUtils.ts";
 import { WikiObject } from "./wikiObject.ts";
-import { getWikiObject } from "../wikidata.ts";
+import { getWikiObject } from "@/tools/wikidata.ts";
 
 export class Position {
   private wiki: WikiObject;

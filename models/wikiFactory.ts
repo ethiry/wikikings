@@ -1,6 +1,6 @@
-import { defaultLanguage } from "./constants.ts";
-import { InstanceOf } from "./enums.ts";
-import { WikiUtils } from "./wikiUtils.ts";
+import { defaultLanguage } from "@/common/constants.ts";
+import { InstanceOf } from "@/common/enums.ts";
+import { WikiUtils } from "@/tools/wikiUtils.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiHuman } from "./wikiHuman.ts";
 import { Item, WikimediaLanguageCode } from "npm:wikibase-sdk";

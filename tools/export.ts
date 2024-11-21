@@ -1,8 +1,7 @@
 import { ItemId } from "npm:wikibase-sdk";
-import { WikiHuman } from "./models/wikiHuman.ts";
-import { formatDate } from "./common/utils.ts";
-import dayjs from "https://deno.land/x/deno_dayjs@v0.5.0/mod.ts";
-import { Config } from "./config.ts";
+import { WikiHuman } from "@/models/wikiHuman.ts";
+import { formatDate, isBefore } from "@/tools/date.ts";
+import { Config } from "@/tools/config.ts";
 
 async function writeLine(outputWriter: WritableStreamDefaultWriter<Uint8Array>, line: string) {
   const encoded = new TextEncoder().encode(line + "\n");
@@ -50,7 +49,7 @@ export async function saveScvFiles(solution: Map<ItemId, WikiHuman>) {
         if (
           younger &&
           younger.born &&
-          dayjs(older.born).isBefore(dayjs(younger.born))
+          isBefore(older.born, younger.born)
         ) {
           siblings.push(`${older.id},${younger.id}`);
         }

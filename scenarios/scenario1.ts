@@ -6,8 +6,8 @@
 // the result contains only Kings and Kings' fathers line
 
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { getWikiObject } from "../wikidata.ts";
-import { WikiHuman } from "../models/wikiHuman.ts";
+import { getWikiObject } from "@/tools/wikidata.ts";
+import { WikiHuman } from "@/models/wikiHuman.ts";
 import { ScenarioBase } from "./scenarioBase.ts";
 
 export class Scenario1 extends ScenarioBase {

@@ -1,5 +1,5 @@
 import { getSitelinkUrl, Item, ItemId, Site, Sitelinks, Term, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { defaultLanguage, fallBackLanguage } from "./constants.ts";
+import { defaultLanguage, fallBackLanguage } from "@/common/constants.ts";
 
 export class WikiObject {
   public id: ItemId;

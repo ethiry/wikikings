@@ -1,3 +1,5 @@
+import dayjs from "https://deno.land/x/deno_dayjs@v0.5.0/mod.ts";
+
 export function formatDate(date?: Date): string {
   if (date) {
     return [
@@ -8,4 +10,8 @@ export function formatDate(date?: Date): string {
   }
 
   return "";
+}
+
+export function isBefore(a: Date, b: Date): boolean {
+  return dayjs(a).isBefore(dayjs(b));
 }

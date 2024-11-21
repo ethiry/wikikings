@@ -2,9 +2,9 @@
 // import { getWikiObject  } from "./wikidata.ts";
 // import { WikiHuman } from "./models/wikiHuman.ts";
 // import { WikiObject } from "./models/wikiObject.ts";
-import { saveScvFiles } from "./export.ts";
-import { WikiHuman } from "./models/wikiHuman.ts";
-import { Scenario1 } from "./scenarios/scenario1.ts";
+import { saveScvFiles } from "@/tools/export.ts";
+import { WikiHuman } from "@/models/wikiHuman.ts";
+import { Scenario1 } from "@/scenarios/scenario1.ts";
 
 /*
 const id = Deno.args[1] || 'Q7732';
@@ -32,7 +32,7 @@ const humans = Array.from(solution.values());
 const kings = humans.filter((l) => l.isKing);
 console.log(kings.length);
 
-humans.sort(HumanComparer);
+humans.sort(WikiHuman.comparer);
 Deno.writeTextFileSync("./notes/dump.json", JSON.stringify(humans));
 
 humans.forEach((k, i) => console.log(`${i + 1}: ${k.toLongString()}`));
@@ -40,16 +40,3 @@ console.log("DONE");
 
 await saveScvFiles(solution);
 console.log("CSV files created");
-
-function HumanComparer(a: WikiHuman, b: WikiHuman): number {
-  if (a.born && b.born) {
-    return a.born.getTime() - b.born.getTime();
-  }
-  if (a.born && !b.born) {
-    return -1;
-  }
-  if (!a.born && b.born) {
-    return 1;
-  }
-  return 0;
-}

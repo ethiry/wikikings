@@ -1,9 +1,9 @@
 import { Item, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { StatementId } from "./enums.ts";
+import { StatementId } from "@/common/enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
-import { WikiUtils } from "./wikiUtils.ts";
-import { formatDate } from "../common/utils.ts";
+import { WikiUtils } from "@/tools/wikiUtils.ts";
+import { formatDate } from "@/tools/date.ts";
 
 export class WikiHuman extends WikiObject {
   public fatherId?: ItemId;
@@ -71,5 +71,18 @@ export class WikiHuman extends WikiObject {
 
   public get csvLine(): string {
     return `${this.id},"${this.label}",${this.isKing},${this.bornFormatted},${this.deadFormatted}`;
+  }
+
+  public static comparer(a: WikiHuman, b: WikiHuman): number {
+    if (a.born && b.born) {
+      return a.born.getTime() - b.born.getTime();
+    }
+    if (a.born && !b.born) {
+      return -1;
+    }
+    if (!a.born && b.born) {
+      return 1;
+    }
+    return 0;
   }
 }

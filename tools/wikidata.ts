@@ -1,16 +1,15 @@
 import { ItemId, WBK, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { WikiObject } from "./models/wikiObject.ts";
-import { WikiFactory } from "./models/wikiFactory.ts";
+import { WikiObject } from "@/models/wikiObject.ts";
+import { WikiFactory } from "@/models/wikiFactory.ts";
+import { Config } from "@/tools/config.ts";
 
 const wbk = WBK({
   instance: "https://www.wikidata.org",
   sparqlEndpoint: "https://query.wikidata.org/sparql",
 });
 
-const cacheFolder = "./wikidata";
-
 function entityCacheFile(id: ItemId): string {
-  return `${cacheFolder}/${id}.json`;
+  return `${Config.cacheFolder}/${id}.json`;
 }
 
 export async function getWikiObject(id: ItemId, language: WikimediaLanguageCode): Promise<WikiObject> {
