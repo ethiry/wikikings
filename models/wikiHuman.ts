@@ -42,7 +42,7 @@ export class WikiHuman extends WikiObject {
   public override toString(): string {
     let result = `${this.label} (${this.id}) [${this.born?.getFullYear()}-${this.dead?.getFullYear()}]`;
     if (this.isKing) {
-      result += " ROI";
+      result += " KING";
     }
     return result;
   }
@@ -66,11 +66,13 @@ export class WikiHuman extends WikiObject {
   }
 
   public static get csvHeaderLine(): string {
-    return "ID,name,isKing,born,dead";
+    return "ID,name,isKing,born,dead,aliases";
   }
 
   public get csvLine(): string {
-    return `${this.id},"${this.label}",${this.isKing},${this.bornFormatted},${this.deadFormatted}`;
+    return `${this.id},"${this.label}",${this.isKing},${this.bornFormatted},${this.deadFormatted},"${
+      this.aliases?.map((a) => a.replaceAll('"', '\\"')).join("|")
+    }"`;
   }
 
   public static comparer(a: WikiHuman, b: WikiHuman): number {
