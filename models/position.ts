@@ -21,8 +21,20 @@ export class Position {
     this.isKing = Position.kingsPositions.includes(this.wiki.id);
   }
 
+  public get id(): ItemId {
+    return this.wiki.id;
+  }
+
   public get label(): string {
     return this.wiki.label;
+  }
+
+  public static get csvHeaderLine(): string {
+    return "positionId,label";
+  }
+
+  public get csvLine(): string {
+    return `${this.id},"${this.label}"`;
   }
 
   public static async CreateList(item: Item, language: WikimediaLanguageCode): Promise<Position[]> {
@@ -52,5 +64,5 @@ export class Position {
     return a.wiki.label.localeCompare(b.wiki.label);
   }
 
-  private static kingsPositions = ["Q22923081", "Q18384454", "Q3439798", "Q3439814", "Q3439814"];
+  private static kingsPositions = ["Q22923081", "Q18384454", "Q3439798", "Q3439814"];
 }

@@ -2,9 +2,10 @@
 // import { getWikiObject  } from "./wikidata.ts";
 // import { WikiHuman } from "./models/wikiHuman.ts";
 // import { WikiObject } from "./models/wikiObject.ts";
-import { saveScvFiles } from "@/tools/export.ts";
+import { Export } from "@/tools/export.ts";
 import { WikiHuman } from "@/models/wikiHuman.ts";
 import { Scenario1 } from "@/scenarios/scenario1.ts";
+import { Config } from "@/tools/config.ts";
 
 /*
 const id = Deno.args[1] || 'Q7732';
@@ -38,5 +39,7 @@ Deno.writeTextFileSync("./notes/dump.json", JSON.stringify(humans));
 humans.forEach((k, i) => console.log(`${i + 1}: ${k.toLongString()}`));
 console.log("DONE");
 
-await saveScvFiles(solution);
+const exporter = new Export(solution);
+exporter.saveScvFiles(Config.outputFolder);
+
 console.log("CSV files created");
