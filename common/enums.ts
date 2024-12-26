@@ -10,13 +10,20 @@ export enum Statement {
   InstanceOf,
 }
 
+export enum Gender {
+  Male,
+  Female,
+}
+
 export enum StatementId {
   DateOfBirth = "P569",
   DateOfDeath = "P570",
   Father = "P22",
+  Mother = "P25",
   Family = "P53",
   InstanceOf = "P31",
   PositionHeld = "P39",
+  Gender = "P21",
   Sibling = "P3373",
 }
 

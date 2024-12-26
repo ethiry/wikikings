@@ -1,17 +1,21 @@
 import { Item, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { StatementId } from "@/common/enums.ts";
+import { Gender, StatementId } from "@/common/enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiUtils } from "@/tools/wikiUtils.ts";
 import { formatDate } from "@/tools/date.ts";
 
 export class WikiHuman extends WikiObject {
+  // init in constructor
   public fatherId?: ItemId;
+  public motherId?: ItemId;
   public siblingsId?: ItemId[];
-  public positions?: Position[];
   public born?: Date;
   public dead?: Date;
   public familyIds?: ItemId[];
+  public gender?: Gender;
+  // init in Create
+  public positions?: Position[];
 
   constructor(item: Item, language: WikimediaLanguageCode) {
     super(item, language);
@@ -19,8 +23,10 @@ export class WikiHuman extends WikiObject {
     this.born = WikiUtils.getStatementDate(item, StatementId.DateOfBirth);
     this.dead = WikiUtils.getStatementDate(item, StatementId.DateOfDeath);
     this.fatherId = WikiUtils.getStatement(item, StatementId.Father);
+    this.motherId = WikiUtils.getStatement(item, StatementId.Mother);
     this.siblingsId = WikiUtils.getStatements(item, StatementId.Sibling);
     this.familyIds = WikiUtils.getStatements(item, StatementId.Family);
+    this.gender = WikiUtils.getStatementGender(item);
   }
 
   public get reigns(): Position[] {
