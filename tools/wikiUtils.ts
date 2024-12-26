@@ -8,7 +8,7 @@ import {
   WikibaseItemSnakDataValue,
   wikibaseTimeToDateObject,
 } from "npm:wikibase-sdk";
-import { Gender, InstanceOf, QualifierId, StatementId } from "@/common/enums.ts";
+import { Gender, InstanceOf, QualifierId, QualifierValue, StatementId } from "@/common/enums.ts";
 
 export class WikiUtils {
   private static claimhasValue(claim: Claim, datatype: DataType): boolean {
@@ -31,9 +31,9 @@ export class WikiUtils {
 
   public static getStatementGender(item: Item): Gender | undefined {
     switch (this.getStatement(item, StatementId.Gender)) {
-      case "Q6581072":
+      case QualifierValue.Female:
         return Gender.Female;
-      case "Q6581097":
+      case QualifierValue.Male:
         return Gender.Male;
     }
     return undefined;
@@ -70,11 +70,11 @@ export class WikiUtils {
   public static getInstanceOf(item: Item): InstanceOf {
     const id = this.getStatement(item, StatementId.InstanceOf);
     switch (id) {
-      case "Q5":
+      case QualifierValue.Human:
         return InstanceOf.Human;
-      case "Q355567":
+      case QualifierValue.NobleTitle:
         return InstanceOf.NobleTitle;
-      case "Q114962596":
+      case QualifierValue.HistoricalPosition:
         return InstanceOf.HistoricalPosition;
     }
     return InstanceOf.Unknown;

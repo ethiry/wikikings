@@ -33,3 +33,11 @@ export enum QualifierId {
   Replaces = "P1365",
   ReplacedBy = "P1366",
 }
+
+export enum QualifierValue {
+  Male = "Q6581097",
+  Female = "Q6581072",
+  Human = "Q5",
+  NobleTitle = "Q355567",
+  HistoricalPosition = "Q114962596",
+}
