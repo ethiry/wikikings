@@ -4,6 +4,7 @@ import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiUtils } from "@/tools/wikiUtils.ts";
 import { formatDate } from "@/tools/date.ts";
+import { TimeBasedStatementHelper } from "./timeBasedStatementHelper.ts";
 
 export class WikiHuman extends WikiObject {
   // init in constructor
@@ -27,6 +28,12 @@ export class WikiHuman extends WikiObject {
     this.siblingsId = WikiUtils.getStatements(item, StatementId.Sibling);
     this.familyIds = WikiUtils.getStatements(item, StatementId.Family);
     this.gender = WikiUtils.getStatementGender(item);
+  }
+
+  public static async Create(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
+    const human = new WikiHuman(item, language);
+    human.positions = await TimeBasedStatementHelper.CreateList<Position>(StatementId.PositionHeld, item, language);
+    return human;
   }
 
   public get reigns(): Position[] {
@@ -63,12 +70,6 @@ export class WikiHuman extends WikiObject {
       result += " *" + this.familyIds.join("*");
     }
     return result;
-  }
-
-  public static async Create(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
-    const human = new WikiHuman(item, language);
-    human.positions = await Position.CreateList(item, language);
-    return human;
   }
 
   public static get csvHeaderLine(): string {
