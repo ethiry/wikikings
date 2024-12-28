@@ -18,13 +18,14 @@ export enum Gender {
 export enum StatementId {
   DateOfBirth = "P569",
   DateOfDeath = "P570",
-  Father = "P22",
-  Mother = "P25",
   Family = "P53",
-  InstanceOf = "P31",
-  PositionHeld = "P39",
+  Father = "P22",
   Gender = "P21",
+  InstanceOf = "P31",
+  Mother = "P25",
+  PositionHeld = "P39",
   Sibling = "P3373",
+  Spouse = "P26",
 }
 
 export enum QualifierId {

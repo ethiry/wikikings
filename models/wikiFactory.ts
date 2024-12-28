@@ -10,7 +10,7 @@ export class WikiFactory {
     const item = input as Item;
     switch (WikiUtils.getInstanceOf(item)) {
       case InstanceOf.Human:
-        return await WikiHuman.Create(item, language);
+        return await WikiHuman.CreateNew(item, language);
       default:
         return new WikiObject(item, language);
     }

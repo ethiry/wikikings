@@ -5,9 +5,10 @@ import { WikiObject } from "./wikiObject.ts";
 import { WikiUtils } from "@/tools/wikiUtils.ts";
 import { formatDate } from "@/tools/date.ts";
 import { TimeBasedStatementHelper } from "./timeBasedStatementHelper.ts";
+import { Spouse } from "@/models/spouse.ts";
 
 export class WikiHuman extends WikiObject {
-  // init in constructor
+  // simple members initialized in constructor
   public fatherId?: ItemId;
   public motherId?: ItemId;
   public siblingsId?: ItemId[];
@@ -15,8 +16,9 @@ export class WikiHuman extends WikiObject {
   public dead?: Date;
   public familyIds?: ItemId[];
   public gender?: Gender;
-  // init in Create
+  // complex members initialized in CreateNew
   public positions?: Position[];
+  public spouses?: Spouse[];
 
   constructor(item: Item, language: WikimediaLanguageCode) {
     super(item, language);
@@ -30,9 +32,13 @@ export class WikiHuman extends WikiObject {
     this.gender = WikiUtils.getStatementGender(item);
   }
 
-  public static async Create(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
+  public static async CreateNew(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
     const human = new WikiHuman(item, language);
     human.positions = await TimeBasedStatementHelper.CreateList<Position>(StatementId.PositionHeld, item, language);
+    if (human.gender === Gender.Male) {
+      // this is to prevent infinite loop, as CreateList below will create a new WkiHuman
+      human.spouses = await TimeBasedStatementHelper.CreateList<Spouse>(StatementId.Spouse, item, language);
+    }
     return human;
   }
 

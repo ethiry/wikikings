@@ -4,6 +4,7 @@ import { WikiObject } from "@/models/wikiObject.ts";
 import { Item, Qualifiers, WikibaseItemSnakDataValue, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { TimeBasedStatement } from "@/models/timeBasedStatement.ts";
 import { getWikiObject } from "@/tools/wikidata.ts";
+import { Spouse } from "@/models/spouse.ts";
 
 export class TimeBasedStatementHelper {
   public static async CreateList<T extends TimeBasedStatement>(
@@ -37,6 +38,8 @@ export class TimeBasedStatementHelper {
     switch (statementId) {
       case StatementId.PositionHeld:
         return new Position(wiki, qualifiers);
+      case StatementId.Spouse:
+        return new Spouse(wiki, qualifiers);
     }
     throw new Error(`Unknown statementId=${statementId}`);
   }
