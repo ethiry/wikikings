@@ -72,11 +72,11 @@ export class WikiHuman extends WikiObject {
   }
 
   public static get csvHeaderLine(): string {
-    return "ID,name,isKing,born,dead,aliases";
+    return "ID,name,gender,isKing,born,dead,aliases";
   }
 
   public get csvLine(): string {
-    return `${this.id},"${this.label}",${this.isKing},${this.bornFormatted},${this.deadFormatted},"${
+    return `${this.id},"${this.label}",${this.gender},${this.isKing},${this.bornFormatted},${this.deadFormatted},"${
       this.aliases?.map((a) => a.replaceAll('"', '\\"')).join("|")
     }"`;
   }

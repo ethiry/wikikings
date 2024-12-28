@@ -2,7 +2,7 @@ MATCH (a:Person)-[r]->(b:Person)
 DETACH DELETE a, b, r;
 
 LOAD CSV WITH HEADERS FROM 'https://thiry.org/assets/wikikings/humans.csv' as row
-MERGE (p:Person { id:row.ID, name:row.name, king:toBoolean(row.isKing), born:date(row.born), dead:date(row.dead), aliases:split(row.aliases, '|') });
+MERGE (p:Person { id:row.ID, name:row.name, king:toBoolean(row.isKing), gender:row.gender, born:date(row.born), dead:date(row.dead), aliases:split(row.aliases, '|') });
 
 LOAD CSV WITH HEADERS FROM 'https://thiry.org/assets/wikikings/parents.csv' as row
 MATCH (p:Person { id:row.parentId })

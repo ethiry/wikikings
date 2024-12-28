@@ -11,8 +11,8 @@ export enum Statement {
 }
 
 export enum Gender {
-  Male,
-  Female,
+  Male = "M",
+  Female = "F",
 }
 
 export enum StatementId {
