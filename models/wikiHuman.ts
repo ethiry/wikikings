@@ -3,19 +3,20 @@ import { Gender, StatementId } from "@/common/enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiUtils } from "@/tools/wikiUtils.ts";
-import { formatDate } from "@/tools/date.ts";
 import { TimeBasedStatementHelper } from "./timeBasedStatementHelper.ts";
 import { Spouse } from "@/models/spouse.ts";
+import { Dayjs } from "dayjs";
+import { CsvLine } from "@/tools/export.ts";
 
 export class WikiHuman extends WikiObject {
   // simple members initialized in constructor
   public fatherId?: ItemId;
   public motherId?: ItemId;
   public siblingsId?: ItemId[];
-  public born?: Date;
-  public dead?: Date;
+  public born?: Dayjs;
+  public dead?: Dayjs;
   public familyIds?: ItemId[];
-  public gender?: Gender;
+  public gender: Gender;
   // complex members initialized in CreateNew
   public positions?: Position[];
   public spouses?: Spouse[];
@@ -50,16 +51,15 @@ export class WikiHuman extends WikiObject {
     return this.reigns.length > 0;
   }
 
-  public get bornFormatted(): string {
-    return formatDate(this.born);
-  }
-
-  public get deadFormatted(): string {
-    return formatDate(this.dead);
+  public get age(): number | undefined {
+    if (this.born && this.dead) {
+      return this.dead.diff(this.born, "day") / 365;
+    }
+    return undefined;
   }
 
   public override toString(): string {
-    let result = `${this.label} (${this.id}) [${this.born?.getFullYear()}-${this.dead?.getFullYear()}]`;
+    let result = `${this.label} (${this.id}) [${this.born?.year()}-${this.dead?.year()}] age=${this.age}`;
     if (this.isKing) {
       result += " KING";
     }
@@ -70,7 +70,7 @@ export class WikiHuman extends WikiObject {
     let result = this.toString();
     if (this.isKing) {
       result += " " +
-        this.reigns.map((p) => `<${p.label}:${p.start?.getFullYear()}-${p.end?.getFullYear()}>`).join("/");
+        this.reigns.map((p) => `<${p.label}:${p.start?.year()}-${p.end?.year()}>`).join("/");
     }
     if (this.familyIds) {
       result += " *" + this.familyIds.join("*");
@@ -78,19 +78,33 @@ export class WikiHuman extends WikiObject {
     return result;
   }
 
-  public static get csvHeaderLine(): string {
-    return "ID,name,gender,isKing,born,dead,aliases";
+  public static get csvHeaderLine(): string[] {
+    return [
+      "ID",
+      "name",
+      "gender",
+      "isKing",
+      "born",
+      "dead",
+      "aliases",
+    ];
   }
 
-  public get csvLine(): string {
-    return `${this.id},"${this.label}",${this.gender},${this.isKing},${this.bornFormatted},${this.deadFormatted},"${
-      this.aliases?.map((a) => a.replaceAll('"', '\\"')).join("|")
-    }"`;
+  public get csvLine(): CsvLine {
+    return [
+      this.id,
+      this.label,
+      this.gender,
+      this.isKing,
+      this.born,
+      this.dead,
+      this.aliases,
+    ];
   }
 
   public static comparer(a: WikiHuman, b: WikiHuman): number {
     if (a.born && b.born) {
-      return a.born.getTime() - b.born.getTime();
+      return a.born.isBefore(b.born) ? -1 : 1;
     }
     if (a.born && !b.born) {
       return -1;

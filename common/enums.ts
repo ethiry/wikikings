@@ -13,6 +13,7 @@ export enum Statement {
 export enum Gender {
   Male = "M",
   Female = "F",
+  Unknown = "U",
 }
 
 export enum StatementId {

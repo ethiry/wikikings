@@ -10,7 +10,7 @@ MATCH (c:Person { id:row.childId })
 MERGE (p)-[:PARENT_OF]->(c);
 
 LOAD CSV WITH HEADERS FROM  'https://thiry.org/assets/wikikings/siblings.csv' as row
-MATCH (a:Person { id:row.oderId })
+MATCH (a:Person { id:row.olderId })
 MATCH (b:Person { id:row.youngerId })
 MERGE (a)-[:SIBLING_OF]->(b);
 

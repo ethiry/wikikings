@@ -46,7 +46,7 @@ export class TimeBasedStatementHelper {
 
   private static comparer(a: TimeBasedStatement, b: TimeBasedStatement): number {
     if (a.start && b.start) {
-      return a.start.getTime() - b.start.getTime();
+      return a.start.isBefore(b.start) ? -1 : 1;
     }
     return a.label.localeCompare(b.label);
   }

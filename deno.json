@@ -5,7 +5,8 @@
   },
   "imports": {
     "@/": "./",
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@1",
+    "dayjs": "https://deno.land/x/deno_dayjs@v0.5.0/mod.ts"
   },
   "fmt": {
     "lineWidth": 120,

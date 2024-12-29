@@ -9,6 +9,7 @@ import {
   wikibaseTimeToDateObject,
 } from "npm:wikibase-sdk";
 import { Gender, InstanceOf, QualifierId, QualifierValue, StatementId } from "@/common/enums.ts";
+import dayjs, { Dayjs } from "dayjs";
 
 export class WikiUtils {
   private static claimhasValue(claim: Claim, datatype: DataType): boolean {
@@ -29,23 +30,23 @@ export class WikiUtils {
     return undefined;
   }
 
-  public static getStatementGender(item: Item): Gender | undefined {
+  public static getStatementGender(item: Item): Gender {
     switch (this.getStatement(item, StatementId.Gender)) {
       case QualifierValue.Female:
         return Gender.Female;
       case QualifierValue.Male:
         return Gender.Male;
     }
-    return undefined;
+    return Gender.Unknown;
   }
 
-  public static getStatementDate(item: Item, statementId: StatementId): Date | undefined {
+  public static getStatementDate(item: Item, statementId: StatementId): Dayjs | undefined {
     if (item.claims) {
       const claims = item.claims[statementId];
       if (claims) {
         const claim = claims[0];
         if (this.claimhasValue(claim, "time")) {
-          return wikibaseTimeToDateObject((claim.mainsnak.datavalue as TimeSnakDataValue).value);
+          return dayjs(wikibaseTimeToDateObject((claim.mainsnak.datavalue as TimeSnakDataValue).value));
         }
       }
     }
@@ -80,11 +81,11 @@ export class WikiUtils {
     return InstanceOf.Unknown;
   }
 
-  public static getDateQualifier(id: QualifierId, qualifiers?: Qualifiers): Date | undefined {
+  public static getDateQualifier(id: QualifierId, qualifiers?: Qualifiers): Dayjs | undefined {
     if (qualifiers) {
       const q = qualifiers[id];
       if (q && q[0] && q[0].datatype === "time" && q[0].datavalue) {
-        return wikibaseTimeToDateObject((q[0].datavalue as TimeSnakDataValue).value);
+        return dayjs(wikibaseTimeToDateObject((q[0].datavalue as TimeSnakDataValue).value));
       }
     }
     return undefined;
