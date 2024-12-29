@@ -1,8 +1,8 @@
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
-import { getWikiObject } from "@/tools/wikidata.ts";
+import { WikiData } from "@/tools/wikiData.ts";
 
-export class BrowseData {
+export class ContinuationData {
   public with: ItemId | WikiHuman;
   public forceAdd: boolean;
 
@@ -14,6 +14,7 @@ export class BrowseData {
 export abstract class ScenarioBase {
   private language: WikimediaLanguageCode;
   private Solution = new Map<ItemId, WikiHuman>();
+  public maxDepth = 0;
 
   constructor(language: WikimediaLanguageCode) {
     this.language = language;
@@ -23,18 +24,19 @@ export abstract class ScenarioBase {
 
   public async run(): Promise<Map<ItemId, WikiHuman>> {
     for (const data of this.startData()) {
-      await this.browse(data);
+      await this.browse(data, 0);
     }
     return this.Solution;
   }
 
-  private async browse(input: BrowseData) {
+  private async browse(input: ContinuationData, depth: number): Promise<void> {
     if (!input) {
       console.log("browse null");
       return;
     }
-    const logEntry = input.with instanceof WikiHuman ? input.with.toString() : "browse " + input.with;
+    const logEntry = input.with instanceof WikiHuman ? input.with.toString() : "browse " + input.with + " " + depth;
     console.log("start " + logEntry);
+    this.maxDepth = Math.max(this.maxDepth, depth);
 
     const id = this.getIdFromInput(input.with);
     if (this.Solution.has(id)) {
@@ -54,7 +56,7 @@ export abstract class ScenarioBase {
 
       // browse continuation
       for (const data of await this.continuationList(wiki)) {
-        await this.browse(data);
+        await this.browse(data, depth + 1);
       }
     }
     console.log("end " + logEntry);
@@ -68,18 +70,18 @@ export abstract class ScenarioBase {
 
   //#endregion
 
-  //#region specific functions
-  protected abstract startData(): BrowseData[];
+  //#region specific functions, to be overridden
+  protected abstract startData(): ContinuationData[];
   protected abstract mustAdd(wiki: WikiHuman): boolean;
-  protected abstract mustStop(input: ItemId | WikiHuman): boolean;
-  protected abstract continuationList(wiki: WikiHuman): Promise<BrowseData[]>;
+  protected abstract mustStop(input: WikiHuman): boolean;
+  protected abstract continuationList(wiki: WikiHuman): Promise<ContinuationData[]>;
   //#endregion
 
   //#region common util functions
 
   protected async getHuman(id: ItemId | undefined): Promise<WikiHuman | undefined> {
     if (id) {
-      const wiki = await getWikiObject(id, this.language);
+      const wiki = await WikiData.getWikiObject(id, this.language);
       if (wiki && wiki instanceof WikiHuman) {
         return wiki;
       }

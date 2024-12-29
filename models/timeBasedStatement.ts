@@ -1,5 +1,5 @@
 import { WikiObject } from "@/models/wikiObject.ts";
-import { WikiUtils } from "@/tools/wikiUtils.ts";
+import { WikiData } from "../tools/wikiData.ts";
 import { QualifierId } from "@/common/enums.ts";
 import { ItemId, Qualifiers } from "npm:wikibase-sdk";
 import { Dayjs } from "dayjs";
@@ -11,8 +11,8 @@ export abstract class TimeBasedStatement {
 
   public constructor(wiki: WikiObject, qualifiers: Qualifiers) {
     this.wiki = wiki;
-    this.start = WikiUtils.getDateQualifier(QualifierId.StartTime, qualifiers);
-    this.end = WikiUtils.getDateQualifier(QualifierId.EndTime, qualifiers);
+    this.start = WikiData.getDateQualifier(QualifierId.StartTime, qualifiers);
+    this.end = WikiData.getDateQualifier(QualifierId.EndTime, qualifiers);
   }
 
   public get id(): ItemId {

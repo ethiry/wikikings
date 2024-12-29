@@ -13,15 +13,15 @@ export type CsvLine = CsvType[];
 export class Export {
   private solution: Map<ItemId, WikiHuman>;
   private humans: WikiHuman[];
-  private folder?: string;
+  private folder: string;
 
-  public constructor(solution: Map<ItemId, WikiHuman>) {
+  public constructor(folder: string, solution: Map<ItemId, WikiHuman>) {
+    this.folder = folder;
     this.solution = solution;
     this.humans = Array.from(solution.values());
   }
 
-  public async saveScvFiles(folder: string) {
-    this.folder = folder;
+  public async saveScvFiles() {
     await this.saveHumans();
     await this.saveParents();
     await this.saveSiblings();
@@ -75,22 +75,31 @@ export class Export {
   }
 
   private async savePositions() {
-    const positionHolders = new Array<CsvLine>();
+    const kingPositionHolders = new Array<CsvLine>();
     const positions = new Map<ItemId, CsvLine>();
     for (const human of this.humans) {
       if (human.positions) {
         for (const position of human.positions) {
+          positions.set(position.id, position.csvLine);
           if (position.isKing) {
-            positionHolders.push([position.id, human.id]);
-            if (!positions.has(position.id)) {
-              positions.set(position.id, position.csvLine);
-            }
+            kingPositionHolders.push([position.id, human.id]);
           }
         }
       }
     }
-    await this.saveCsvFile("positions", Position.csvHeaderLine, Array.from(positions.values()));
-    await this.saveCsvFile("positionHolders", ["positionId", "holderId"], positionHolders);
+
+    const allPositions = Array.from(positions.values());
+    allPositions.sort(this.internalPositionsComparer);
+    await this.saveCsvFile("allPositions", Position.csvHeaderLine, allPositions);
+    await this.saveCsvFile("kingPositions", Position.csvHeaderLine, allPositions.filter((p) => p[2] === true));
+    await this.saveCsvFile("kingPositionHolders", ["positionId", "holderId"], kingPositionHolders);
+  }
+
+  private internalPositionsComparer(a: CsvLine, b: CsvLine): number {
+    if (a[0] && b[0] && typeof a[0] === "string" && typeof b[0] === "string") {
+      return a[0].localeCompare(b[0]);
+    }
+    return 0;
   }
 
   private async saveCsvFile(filename: string, header: string[], lines: CsvLine[]) {

@@ -3,7 +3,7 @@ import { StatementId } from "@/common/enums.ts";
 import { WikiObject } from "@/models/wikiObject.ts";
 import { Item, Qualifiers, WikibaseItemSnakDataValue, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { TimeBasedStatement } from "@/models/timeBasedStatement.ts";
-import { getWikiObject } from "@/tools/wikidata.ts";
+import { WikiData } from "@/tools/wikiData.ts";
 import { Spouse } from "@/models/spouse.ts";
 
 export class TimeBasedStatementHelper {
@@ -19,7 +19,7 @@ export class TimeBasedStatementHelper {
         for (const claim of claims) {
           if (claim.qualifiers) {
             const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
-            const obj = await getWikiObject(value.value.id, language);
+            const obj = await WikiData.getWikiObject(value.value.id, language);
             result.push(this.CreateNew(statementId, obj, claim.qualifiers) as T);
           }
         }

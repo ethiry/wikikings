@@ -2,7 +2,7 @@ import { Item, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { Gender, StatementId } from "@/common/enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
-import { WikiUtils } from "@/tools/wikiUtils.ts";
+import { WikiData } from "../tools/wikiData.ts";
 import { TimeBasedStatementHelper } from "./timeBasedStatementHelper.ts";
 import { Spouse } from "@/models/spouse.ts";
 import { Dayjs } from "dayjs";
@@ -24,13 +24,13 @@ export class WikiHuman extends WikiObject {
   constructor(item: Item, language: WikimediaLanguageCode) {
     super(item, language);
 
-    this.born = WikiUtils.getStatementDate(item, StatementId.DateOfBirth);
-    this.dead = WikiUtils.getStatementDate(item, StatementId.DateOfDeath);
-    this.fatherId = WikiUtils.getStatement(item, StatementId.Father);
-    this.motherId = WikiUtils.getStatement(item, StatementId.Mother);
-    this.siblingsId = WikiUtils.getStatements(item, StatementId.Sibling);
-    this.familyIds = WikiUtils.getStatements(item, StatementId.Family);
-    this.gender = WikiUtils.getStatementGender(item);
+    this.born = WikiData.getStatementDate(item, StatementId.DateOfBirth);
+    this.dead = WikiData.getStatementDate(item, StatementId.DateOfDeath);
+    this.fatherId = WikiData.getStatement(item, StatementId.Father);
+    this.motherId = WikiData.getStatement(item, StatementId.Mother);
+    this.siblingsId = WikiData.getStatements(item, StatementId.Sibling);
+    this.familyIds = WikiData.getStatements(item, StatementId.Family);
+    this.gender = WikiData.getStatementGender(item);
   }
 
   public static async CreateNew(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
