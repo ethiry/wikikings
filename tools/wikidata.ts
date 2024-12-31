@@ -52,8 +52,25 @@ export class WikiData {
         }
       }
     }
-    console.log(`For item=${item.id} no statement ${statementId}`);
     return undefined;
+  }
+
+  public static hasStatementAndQualifier(
+    item: Item,
+    statementId: StatementId,
+    qualifierValue: QualifierValue,
+  ): boolean {
+    if (item.claims) {
+      const claims = item.claims[statementId];
+      if (claims) {
+        for (const claim of claims) {
+          if (this.claimhasValue(claim, "wikibase-item")) {
+            return (claim.mainsnak.datavalue as WikibaseItemSnakDataValue).value.id === qualifierValue;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   public static getStatementGender(item: Item): Gender {

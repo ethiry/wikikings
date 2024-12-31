@@ -34,11 +34,16 @@ export class Export {
   }
 
   private async saveParents() {
-    await this.saveCsvFile(
-      "parents",
-      ["parentId", "childId"],
-      this.humans.filter((h) => h.fatherId).map((h) => [h.fatherId, h.id]),
-    );
+    const parents = new Array<CsvLine>();
+    this.humans.forEach((h) => {
+      if (h.fatherId) {
+        parents.push([h.fatherId, h.id]);
+      }
+      if (h.motherId) {
+        parents.push([h.motherId, h.id]);
+      }
+    });
+    await this.saveCsvFile("parents", ["parentId", "childId"], parents);
   }
 
   private async saveSiblings() {

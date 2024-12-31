@@ -1,5 +1,5 @@
 import { Item, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { Gender, StatementId } from "@/common/enums.ts";
+import { Gender, QualifierValue, StatementId } from "@/common/enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
 import { WikiData } from "../tools/wikiData.ts";
@@ -13,10 +13,12 @@ export class WikiHuman extends WikiObject {
   public fatherId?: ItemId;
   public motherId?: ItemId;
   public siblingsId?: ItemId[];
+  public childrenId?: ItemId[];
   public born?: Dayjs;
   public dead?: Dayjs;
   public familyIds?: ItemId[];
   public gender: Gender;
+  public isMonarch: boolean = false;
   // complex members initialized in CreateNew
   public positions?: Position[];
   public spouses?: Spouse[];
@@ -29,8 +31,10 @@ export class WikiHuman extends WikiObject {
     this.fatherId = WikiData.getStatement(item, StatementId.Father);
     this.motherId = WikiData.getStatement(item, StatementId.Mother);
     this.siblingsId = WikiData.getStatements(item, StatementId.Sibling);
+    this.childrenId = WikiData.getStatements(item, StatementId.Child);
     this.familyIds = WikiData.getStatements(item, StatementId.Family);
     this.gender = WikiData.getStatementGender(item);
+    this.isMonarch = WikiData.hasStatementAndQualifier(item, StatementId.Occupation, QualifierValue.Monarch);
   }
 
   public static async CreateNew(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
@@ -59,9 +63,12 @@ export class WikiHuman extends WikiObject {
   }
 
   public override toString(): string {
-    let result = `${this.label} (${this.id}) [${this.born?.year()}-${this.dead?.year()}] age=${this.age}`;
+    let result = `${this.label} (${this.id}) [${this.born?.year()}-${this.dead?.year()}]`;
     if (this.isKing) {
       result += " KING";
+    }
+    if (this.isMonarch) {
+      result += " MONARCH";
     }
     return result;
   }
