@@ -10,8 +10,12 @@ import { WikiHuman } from "@/models/wikiHuman.ts";
 import { ContinuationData, ScenarioBase } from "./scenarioBase.ts";
 
 export class Scenario1 extends ScenarioBase {
-  constructor(language: WikimediaLanguageCode) {
-    super(language);
+  constructor(language: WikimediaLanguageCode, depthLimit?: number) {
+    super(language, depthLimit);
+  }
+
+  protected override get defaultDepthLimt(): number | undefined {
+    return undefined;
   }
 
   private startId: ItemId = "Q7771"; // Louis-Philippe

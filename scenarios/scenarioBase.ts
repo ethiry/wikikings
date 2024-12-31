@@ -10,14 +10,24 @@ export class ContinuationData {
     this.with = id;
     this.forceAdd = force ?? false;
   }
+
+  public get id(): ItemId {
+    return this.with instanceof WikiHuman ? this.with.id : this.with;
+  }
 }
 export abstract class ScenarioBase {
   private language: WikimediaLanguageCode;
   private Solution = new Map<ItemId, WikiHuman>();
   public maxDepth = 0;
+  private maxDepthLimit: number | undefined;
 
-  constructor(language: WikimediaLanguageCode) {
+  constructor(language: WikimediaLanguageCode, depthLimit?: number) {
     this.language = language;
+    this.maxDepthLimit = depthLimit ?? this.defaultDepthLimt;
+  }
+
+  protected get defaultDepthLimt(): number | undefined {
+    return 5;
   }
 
   //#region the algorithm
@@ -29,43 +39,59 @@ export abstract class ScenarioBase {
     return this.Solution;
   }
 
-  private async browse(input: ContinuationData, depth: number): Promise<void> {
+  private async browse(input: ContinuationData, level: number): Promise<void> {
     if (!input) {
       console.log("browse null");
       return;
     }
-    const logEntry = input.with instanceof WikiHuman ? input.with.toString() : "browse " + input.with + " " + depth;
-    console.log("start " + logEntry);
-    this.maxDepth = Math.max(this.maxDepth, depth);
+    const logEntry = `[${level.toString().padStart(2, "0")}] ${input.id}`;
+    console.log(logEntry + " start");
+    if (this.maxDepthLimit && level > this.maxDepthLimit) {
+      console.log(logEntry + " ABORTED: max depth reached");
+      return;
+    }
+    this.maxDepth = Math.max(this.maxDepth, level);
 
     const id = this.getIdFromInput(input.with);
     if (this.Solution.has(id)) {
+      console.log(logEntry + " already in solution");
       return;
     }
     const wiki = await this.getHumanFromInput(input.with);
     if (wiki) {
-      console.log(`Found ${wiki.toString()}`);
-
       // add to solution
-      this.addToSolutionIfneeded(wiki, input.forceAdd);
+      const added = this.addToSolutionIfneeded(wiki, input.forceAdd);
+      console.log(`Found ${wiki.toString()} added: ${added}`);
 
       // stop condition
       if (this.mustStop(wiki)) {
+        console.log(logEntry + " stop condition");
         return;
       }
 
       // browse continuation
-      for (const data of await this.continuationList(wiki)) {
-        await this.browse(data, depth + 1);
+      if (this.maxDepthLimit && level >= this.maxDepthLimit) {
+        console.log(logEntry + " max depth reached, no continuation");
+      } else {
+        const continuationList = await this.continuationList(wiki);
+        console.log(
+          logEntry + " continue with " + continuationList.length + " items " +
+            continuationList.map((c) => c.id).join(","),
+        );
+        for (const data of continuationList) {
+          await this.browse(data, level + 1);
+        }
       }
     }
-    console.log("end " + logEntry);
+    console.log(logEntry + " end");
   }
 
-  private addToSolutionIfneeded(wiki: WikiHuman, force: boolean) {
+  private addToSolutionIfneeded(wiki: WikiHuman, force: boolean): boolean {
     if (!this.Solution.has(wiki.id) && (force || this.mustAdd(wiki))) {
       this.Solution.set(wiki.id, wiki);
+      return true;
     }
+    return false;
   }
 
   //#endregion

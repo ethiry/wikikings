@@ -17,7 +17,7 @@ export class TimeBasedStatementHelper {
       if (claims) {
         const result: T[] = [];
         for (const claim of claims) {
-          if (claim.qualifiers) {
+          if (claim.mainsnak.datavalue && claim.qualifiers) {
             const value = claim.mainsnak.datavalue as WikibaseItemSnakDataValue;
             const obj = await WikiData.getWikiObject(value.value.id, language);
             result.push(this.CreateNew(statementId, obj, claim.qualifiers) as T);

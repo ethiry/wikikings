@@ -24,9 +24,11 @@ export enum StatementId {
   Gender = "P21",
   InstanceOf = "P31",
   Mother = "P25",
+  Occupation = "P106",
   PositionHeld = "P39",
   Sibling = "P3373",
   Spouse = "P26",
+  Child = "P40",
 }
 
 export enum QualifierId {
@@ -40,6 +42,7 @@ export enum QualifierValue {
   Male = "Q6581097",
   Female = "Q6581072",
   Human = "Q5",
+  Monarch = "Q116",
   NobleTitle = "Q355567",
   HistoricalPosition = "Q114962596",
 }
