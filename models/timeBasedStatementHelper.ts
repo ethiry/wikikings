@@ -5,6 +5,7 @@ import { Item, Qualifiers, WikibaseItemSnakDataValue, WikimediaLanguageCode } fr
 import { TimeBasedStatement } from "@/models/timeBasedStatement.ts";
 import { WikiData } from "@/tools/wikiData.ts";
 import { Spouse } from "@/models/spouse.ts";
+import { isBefore } from "@/tools/date.ts";
 
 export class TimeBasedStatementHelper {
   public static async CreateList<T extends TimeBasedStatement>(
@@ -30,10 +31,6 @@ export class TimeBasedStatementHelper {
     return undefined;
   }
 
-  private static create<Type>(c: { new (): Type }): Type {
-    return new c();
-  }
-
   private static CreateNew(statementId: StatementId, wiki: WikiObject, qualifiers: Qualifiers): TimeBasedStatement {
     switch (statementId) {
       case StatementId.PositionHeld:
@@ -46,7 +43,7 @@ export class TimeBasedStatementHelper {
 
   private static comparer(a: TimeBasedStatement, b: TimeBasedStatement): number {
     if (a.start && b.start) {
-      return a.start.isBefore(b.start) ? -1 : 1;
+      return isBefore(a.start, b.start) ? -1 : 1;
     }
     return a.label.localeCompare(b.label);
   }

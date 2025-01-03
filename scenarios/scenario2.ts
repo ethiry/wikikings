@@ -1,6 +1,7 @@
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
 import { ContinuationData, ScenarioBase } from "./scenarioBase.ts";
+import { isBefore } from "@/tools/date.ts";
 
 export class Scenario2 extends ScenarioBase {
   constructor(language: WikimediaLanguageCode, depthLimit?: number) {
@@ -26,7 +27,7 @@ export class Scenario2 extends ScenarioBase {
       return false;
     }
     if (input.born) {
-      return input.born.isBefore("0900-01-01");
+      return isBefore(input.born, new Date("900-01-01"));
     }
     return true;
   }

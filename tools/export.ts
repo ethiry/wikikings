@@ -1,13 +1,13 @@
 import { isItemId, ItemId } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
 import { Position } from "@/models/position.ts";
-import dayjs, { Dayjs } from "dayjs";
 import { Gender } from "@/common/enums.ts";
+import { formatDate, isBefore } from "@/tools/date.ts";
 
 const csvSeparator = ",";
 const csvExtension = "csv";
 
-export type CsvType = ItemId | string | boolean | Gender | Dayjs | string[] | undefined;
+export type CsvType = ItemId | string | boolean | Gender | Date | string[] | undefined;
 export type CsvLine = CsvType[];
 
 export class Export {
@@ -55,7 +55,7 @@ export class Export {
           if (
             younger &&
             younger.born &&
-            older.born.isBefore(younger.born)
+            isBefore(older.born, younger.born)
           ) {
             siblings.push([older.id, younger.id]);
           }
@@ -145,12 +145,8 @@ export class Export {
         return `"${item}"`;
       }
     }
-    if (dayjs.isDayjs(item)) {
-      return [
-        item.year().toString().padStart(4, "0"),
-        (item.month() + 1).toString().padStart(2, "0"),
-        item.date().toString().padStart(2, "0"),
-      ].join("-");
+    if (item instanceof Date) {
+      return formatDate(item);
     }
     if (Array.isArray(item)) {
       return `"${item.map((a) => a.replaceAll('"', '\\"')).join("|")}"`;

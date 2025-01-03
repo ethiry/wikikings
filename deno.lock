@@ -1,20 +1,12 @@
 {
   "version": "4",
   "specifiers": {
-    "npm:dayjs@*": "1.11.13",
     "npm:wikibase-sdk@*": "10.2.1"
   },
   "npm": {
-    "dayjs@1.11.13": {
-      "integrity": "sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg=="
-    },
     "wikibase-sdk@10.2.1": {
       "integrity": "sha512-HZIKW5iiH5OBaBFTXedrOxVftlkcw1jFpM8F4s9aWy9KBv2RPmRFA3J/01I054HzxcxJfMZS/QDjrKyyK0i3AA=="
     }
-  },
-  "remote": {
-    "https://deno.land/x/deno_dayjs@v0.5.0/mod.ts": "9c0288fafa738dee685e9f3e436269f2da7dd65e6f928bbe53ad3a2db68d1ef6",
-    "https://esm.sh/v96/dayjs@1.11.5/es2022/dayjs.mjs": "62c5c11c07adf3d55398171043b6691559df07a1c406064f9ea1c8877bbeb643"
   },
   "workspace": {
     "dependencies": [

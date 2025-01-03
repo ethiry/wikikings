@@ -5,8 +5,8 @@ import { WikiObject } from "./wikiObject.ts";
 import { WikiData } from "../tools/wikiData.ts";
 import { TimeBasedStatementHelper } from "./timeBasedStatementHelper.ts";
 import { Spouse } from "@/models/spouse.ts";
-import { Dayjs } from "dayjs";
 import { CsvLine } from "@/tools/export.ts";
+import { isBefore } from "@/tools/date.ts";
 
 export class WikiHuman extends WikiObject {
   // simple members initialized in constructor
@@ -14,8 +14,8 @@ export class WikiHuman extends WikiObject {
   public motherId?: ItemId;
   public siblingsId?: ItemId[];
   public childrenId?: ItemId[];
-  public born?: Dayjs;
-  public dead?: Dayjs;
+  public born?: Date;
+  public dead?: Date;
   public familyIds?: ItemId[];
   public gender: Gender;
   public isMonarch: boolean = false;
@@ -57,13 +57,17 @@ export class WikiHuman extends WikiObject {
 
   public get age(): number | undefined {
     if (this.born && this.dead) {
-      return this.dead.diff(this.born, "day") / 365;
+      return (this.dead.getTime() - this.born.getTime()) / 31557600000;
     }
     return undefined;
   }
 
+  public get ignore(): boolean {
+    return this.age === undefined || (this.age < 10 && !this.isKing);
+  }
+
   public override toString(): string {
-    let result = `${this.label} (${this.id}) [${this.born?.year()}-${this.dead?.year()}]`;
+    let result = `${this.label} (${this.id}) [${this.born?.getFullYear()}-${this.dead?.getFullYear()}]`;
     if (this.isKing) {
       result += " KING";
     }
@@ -77,7 +81,7 @@ export class WikiHuman extends WikiObject {
     let result = this.toString();
     if (this.isKing) {
       result += " " +
-        this.reigns.map((p) => `<${p.label}:${p.start?.year()}-${p.end?.year()}>`).join("/");
+        this.reigns.map((p) => `<${p.label}:${p.start?.getFullYear()}-${p.end?.getFullYear()}>`).join("/");
     }
     if (this.familyIds) {
       result += " *" + this.familyIds.join("*");
@@ -111,7 +115,7 @@ export class WikiHuman extends WikiObject {
 
   public static comparer(a: WikiHuman, b: WikiHuman): number {
     if (a.born && b.born) {
-      return a.born.isBefore(b.born) ? -1 : 1;
+      return isBefore(a.born, b.born) ? -1 : 1;
     }
     if (a.born && !b.born) {
       return -1;
