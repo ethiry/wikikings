@@ -24,9 +24,11 @@ export class WikiData {
   public static async getWikiObject(id: ItemId, language: WikimediaLanguageCode): Promise<WikiObject> {
     const path = this.entityCacheFile(id);
     let json = {};
+    let fromCache = false;
 
     try {
       json = JSON.parse(Deno.readTextFileSync(path));
+      fromCache = true;
     } catch {
       const url = wbk.getEntities({
         ids: [id],
@@ -38,7 +40,7 @@ export class WikiData {
       Deno.writeTextFileSync(path, JSON.stringify(json));
     }
 
-    return await WikiFactory.Create(json);
+    return await WikiFactory.Create(json, fromCache, language);
   }
 
   public static getStatement(item: Item, statementId: StatementId): ItemId | undefined {
@@ -137,8 +139,7 @@ export class WikiData {
     if (qualifiers) {
       const q = qualifiers[id];
       if (q && q[0] && q[0].datatype === "wikibase-item" && q[0].datavalue) {
-        const value = q[0].datavalue as WikibaseItemSnakDataValue;
-        return value.value.id;
+        return (q[0].datavalue as WikibaseItemSnakDataValue).value.id;
       }
     }
     return undefined;

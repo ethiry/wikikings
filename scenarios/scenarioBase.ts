@@ -57,7 +57,7 @@ export abstract class ScenarioBase {
       console.log(logEntry + " already in solution");
       return;
     }
-    const wiki = await this.getHumanFromInput(input.with, this.language);
+    const wiki = await this.getHumanFromInput(input.with);
     if (wiki) {
       // add to solution
       const added = this.addToSolutionIfneeded(wiki, input.forceAdd);
@@ -112,9 +112,18 @@ export abstract class ScenarioBase {
 
   protected async getHumanFromInput(
     input: ItemId | WikiHuman,
-    language: WikimediaLanguageCode,
   ): Promise<WikiHuman | undefined> {
-    return input instanceof WikiHuman ? input : await WikiData.getHuman(input, language);
+    return input instanceof WikiHuman ? input : await this.getHuman(input);
+  }
+
+  protected async getHuman(id: ItemId | undefined): Promise<WikiHuman | undefined> {
+    if (id) {
+      const wiki = await WikiData.getWikiObject(id, this.language);
+      if (wiki && wiki instanceof WikiHuman) {
+        return wiki;
+      }
+    }
+    return undefined;
   }
 
   //#endregion

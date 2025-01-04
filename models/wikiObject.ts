@@ -1,5 +1,5 @@
 import { getSitelinkUrl, Item, ItemId, Site, Sitelinks, Term, WikimediaLanguageCode } from "npm:wikibase-sdk";
-import { defaultLanguage, fallBackLanguage } from "@/common/constants.ts";
+import { fallBackLanguage } from "@/common/constants.ts";
 
 export class WikiObject {
   public id: ItemId;
@@ -7,10 +7,11 @@ export class WikiObject {
   public description: string;
   public wikipediaLink?: string;
   public aliases?: string[];
-  public fromCache = false;
+  public fromCache: boolean;
 
-  constructor(item: Item, language: WikimediaLanguageCode = defaultLanguage) {
+  constructor(item: Item, fromCache: boolean, language: WikimediaLanguageCode) {
     this.id = item.id;
+    this.fromCache = fromCache;
     this.label = this.getTranslated(language, item.labels) ?? this.id;
     this.description = this.getTranslated(language, item.descriptions) ?? this.id;
     this.wikipediaLink = this.getWikipediaLinks(language, item.sitelinks);

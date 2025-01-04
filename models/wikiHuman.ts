@@ -23,8 +23,8 @@ export class WikiHuman extends WikiObject {
   public positions?: Position[];
   public spouses?: Spouse[];
 
-  constructor(item: Item, language: WikimediaLanguageCode) {
-    super(item, language);
+  constructor(item: Item, fromCache: boolean, language: WikimediaLanguageCode) {
+    super(item, fromCache, language);
 
     this.born = WikiData.getStatementDate(item, StatementId.DateOfBirth);
     this.dead = WikiData.getStatementDate(item, StatementId.DateOfDeath);
@@ -37,8 +37,8 @@ export class WikiHuman extends WikiObject {
     this.isMonarch = WikiData.hasStatementAndQualifier(item, StatementId.Occupation, QualifierValue.Monarch);
   }
 
-  public static async CreateNew(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
-    const human = new WikiHuman(item, language);
+  public static async CreateNew(item: Item, fromCache: boolean, language: WikimediaLanguageCode): Promise<WikiHuman> {
+    const human = new WikiHuman(item, fromCache, language);
     human.positions = await TimeBasedStatementHelper.CreateList<Position>(StatementId.PositionHeld, item, language);
     human.spouses = await TimeBasedStatementHelper.CreateList<Spouse>(StatementId.Spouse, item, language);
     return human;
