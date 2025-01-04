@@ -24,6 +24,7 @@ export class Export {
   public async saveScvFiles() {
     await this.saveHumans();
     await this.saveParents();
+    await this.saveSpouses();
     await this.saveSiblings();
     await this.saveReplacedBy();
     await this.savePositions();
