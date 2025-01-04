@@ -7,6 +7,7 @@ export class WikiObject {
   public description: string;
   public wikipediaLink?: string;
   public aliases?: string[];
+  public fromCache = false;
 
   constructor(item: Item, language: WikimediaLanguageCode = defaultLanguage) {
     this.id = item.id;

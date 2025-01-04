@@ -6,7 +6,7 @@
   "configurations": [
     {
       "request": "launch",
-      "name": "Launch Program",
+      "name": "main",
       "type": "node",
       "program": "${workspaceFolder}/main.ts",
       "cwd": "${workspaceFolder}",
@@ -16,9 +16,29 @@
         "run",
         "--unstable",
         "--inspect-wait",
-        "--allow-all"
+        "--allow-all",
+      ],
+      "attachSimplePort": 9229
+    },
+    {
+      "request": "launch",
+      "name": "dump",
+      "type": "node",
+      "program": "${workspaceFolder}/dump.ts",
+      "cwd": "${workspaceFolder}",
+      "env": {},
+      "runtimeExecutable": "/Users/manu/.deno/bin/deno",
+      "runtimeArgs": [
+        "run",
+        "--unstable",
+        "--inspect-wait",
+        "--allow-all",
+      ],
+      "args": [
+        "Q7742"
       ],
       "attachSimplePort": 9229
     }
+
   ]
 }

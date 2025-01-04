@@ -40,10 +40,7 @@ export class WikiHuman extends WikiObject {
   public static async CreateNew(item: Item, language: WikimediaLanguageCode): Promise<WikiHuman> {
     const human = new WikiHuman(item, language);
     human.positions = await TimeBasedStatementHelper.CreateList<Position>(StatementId.PositionHeld, item, language);
-    if (human.gender === Gender.Male) {
-      // this is to prevent infinite loop, as CreateList below will create a new WkiHuman
-      human.spouses = await TimeBasedStatementHelper.CreateList<Spouse>(StatementId.Spouse, item, language);
-    }
+    human.spouses = await TimeBasedStatementHelper.CreateList<Spouse>(StatementId.Spouse, item, language);
     return human;
   }
 
@@ -124,5 +121,48 @@ export class WikiHuman extends WikiObject {
       return 1;
     }
     return 0;
+  }
+
+  public continuationList(language: WikimediaLanguageCode): ItemId[] {
+    const result: ItemId[] = [];
+
+    // father && mother
+    if (this.fatherId) {
+      result.push(this.fatherId);
+    }
+    if (this.motherId) {
+      result.push(this.motherId);
+    }
+
+    // siblings
+    // if (this.siblingsId) {
+    //   result.push(...this.siblingsId);
+    // }
+
+    // spouses
+    if (this.spouses) {
+      result.push(...this.spouses.map((s) => s.id));
+    }
+
+    // children
+    if (this.childrenId) {
+      result.push(...this.childrenId);
+    }
+
+    // predecessors
+    this.reigns.filter((r) => r.replaces).forEach((pred) => {
+      if (pred.replaces && result.filter((id) => id === pred.replaces).length === 0) {
+        result.push(pred.replaces);
+      }
+    });
+
+    // successors
+    this.reigns.filter((r) => r.replacedBy).forEach((succ) => {
+      if (succ.replacedBy && result.filter((id) => id === succ.replacedBy).length === 0) {
+        result.push(succ.replacedBy);
+      }
+    });
+
+    return result;
   }
 }

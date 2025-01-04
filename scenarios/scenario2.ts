@@ -1,7 +1,7 @@
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
 import { ContinuationData, ScenarioBase } from "./scenarioBase.ts";
-import { isBefore } from "@/tools/date.ts";
+import { WikiData } from "@/tools/wikiData.ts";
 
 export class Scenario2 extends ScenarioBase {
   constructor(language: WikimediaLanguageCode, depthLimit?: number) {
@@ -26,8 +26,11 @@ export class Scenario2 extends ScenarioBase {
     if (input.isKing) {
       return false;
     }
+    if (input.ignore) {
+      return true;
+    }
     if (input.born) {
-      return isBefore(input.born, new Date("900-01-01"));
+      return input.born.getFullYear() < 900;
     }
     return true;
   }
@@ -44,43 +47,33 @@ export class Scenario2 extends ScenarioBase {
     }
 
     // siblings
-    for (const id of wiki?.siblingsId ?? []) {
-      const sib = await this.getHuman(id);
-      if (sib instanceof WikiHuman && sib.age && sib.age >= 10) {
-        result.push(new ContinuationData(sib));
-      }
+    if (wiki.siblingsId) {
+      result.push(...wiki.siblingsId.map((id) => new ContinuationData(id)));
     }
 
     // spouses
-    for (const spouse of wiki?.spouses ?? []) {
-      if (spouse.wiki instanceof WikiHuman) {
-        result.push(new ContinuationData(spouse.wiki));
-      }
+    if (wiki.spouses) {
+      result.push(...wiki.spouses.map((spouse) => new ContinuationData(spouse.id)));
     }
 
     // children
-    for (const id of wiki?.childrenId ?? []) {
-      const child = await this.getHuman(id);
-      if (child instanceof WikiHuman && child.age && child.age >= 10) {
-        result.push(new ContinuationData(child));
-      }
+    if (wiki.childrenId) {
+      result.push(...wiki.childrenId.map((id) => new ContinuationData(id)));
     }
 
     // predecessors
-    const predecessors = wiki.positions?.filter((p) => p.isKing && p.replaces) ?? [];
-    for (const pred of predecessors ?? []) {
+    wiki.reigns.filter((r) => r.replaces).forEach((pred) => {
       if (pred.replaces && result.filter((r) => r.id === pred.replaces).length === 0) {
         result.push(new ContinuationData(pred.replaces));
       }
-    }
+    });
 
     // successors
-    const successors = wiki.positions?.filter((p) => p.isKing && p.replacedBy) ?? [];
-    for (const succ of successors ?? []) {
+    wiki.reigns.filter((r) => r.replacedBy).forEach((succ) => {
       if (succ.replacedBy && result.filter((r) => r.id === succ.replacedBy).length === 0) {
         result.push(new ContinuationData(succ.replacedBy));
       }
-    }
+    });
 
     return result;
   }

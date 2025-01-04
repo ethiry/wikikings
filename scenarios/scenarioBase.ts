@@ -16,7 +16,7 @@ export class ContinuationData {
   }
 }
 export abstract class ScenarioBase {
-  private language: WikimediaLanguageCode;
+  protected language: WikimediaLanguageCode;
   private Solution = new Map<ItemId, WikiHuman>();
   public maxDepth = 0;
   private maxDepthLimit: number | undefined;
@@ -57,11 +57,12 @@ export abstract class ScenarioBase {
       console.log(logEntry + " already in solution");
       return;
     }
-    const wiki = await this.getHumanFromInput(input.with);
+    const wiki = await this.getHumanFromInput(input.with, this.language);
     if (wiki) {
       // add to solution
       const added = this.addToSolutionIfneeded(wiki, input.forceAdd);
-      console.log(`Found ${wiki.toString()} added: ${added}`);
+      const origin = wiki.fromCache ? "cache" : "web";
+      console.log(`Found ${wiki.toString()} (${origin}) added:${added}`, Deno.memoryUsage().rss);
 
       // stop condition
       if (this.mustStop(wiki)) {
@@ -105,22 +106,15 @@ export abstract class ScenarioBase {
 
   //#region common util functions
 
-  protected async getHuman(id: ItemId | undefined): Promise<WikiHuman | undefined> {
-    if (id) {
-      const wiki = await WikiData.getWikiObject(id, this.language);
-      if (wiki && wiki instanceof WikiHuman) {
-        return wiki;
-      }
-    }
-    return undefined;
-  }
-
   protected getIdFromInput(input: ItemId | WikiHuman): ItemId {
     return input instanceof WikiHuman ? input.id : input;
   }
 
-  protected async getHumanFromInput(input: ItemId | WikiHuman): Promise<WikiHuman | undefined> {
-    return input instanceof WikiHuman ? input : await this.getHuman(input);
+  protected async getHumanFromInput(
+    input: ItemId | WikiHuman,
+    language: WikimediaLanguageCode,
+  ): Promise<WikiHuman | undefined> {
+    return input instanceof WikiHuman ? input : await WikiData.getHuman(input, language);
   }
 
   //#endregion
