@@ -46,6 +46,16 @@ export class Export {
     await this.saveCsvFile("parents", ["parentId", "childId"], parents);
   }
 
+  private async saveSpouses() {
+    const spouses = new Array<CsvLine>();
+    this.humans.forEach((h) => {
+      h.spouses?.forEach((s) => {
+        spouses.push([h.id, s.id, s.start, s.end]);
+      });
+    });
+    await this.saveCsvFile("spouses", ["husbandId", "wifeId", "start", "end"], spouses);
+  }
+
   private async saveSiblings() {
     const siblings = new Array<CsvLine>();
     for (const older of this.humans) {
