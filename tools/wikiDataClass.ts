@@ -11,7 +11,6 @@ import {
   WikimediaLanguageCode,
 } from "npm:wikibase-sdk";
 import { Gender, InstanceOf, QualifierId, QualifierValue, StatementId } from "@/common/enums.ts";
-import dayjs, { Dayjs } from "dayjs";
 import { Config } from "@/tools/config.ts";
 import { WikiObject } from "@/models/wikiObject.ts";
 import { WikiFactory } from "@/models/wikiFactory.ts";
@@ -83,13 +82,13 @@ export class WikiData {
     return Gender.Unknown;
   }
 
-  public static getStatementDate(item: Item, statementId: StatementId): Dayjs | undefined {
+  public static getStatementDate(item: Item, statementId: StatementId): Date | undefined {
     if (item.claims) {
       const claims = item.claims[statementId];
       if (claims) {
         const claim = claims[0];
         if (this.claimhasValue(claim, "time")) {
-          return dayjs(wikibaseTimeToDateObject((claim.mainsnak.datavalue as TimeSnakDataValue).value));
+          return wikibaseTimeToDateObject((claim.mainsnak.datavalue as TimeSnakDataValue).value);
         }
       }
     }
@@ -124,11 +123,11 @@ export class WikiData {
     return InstanceOf.Unknown;
   }
 
-  public static getDateQualifier(id: QualifierId, qualifiers?: Qualifiers): Dayjs | undefined {
+  public static getDateQualifier(id: QualifierId, qualifiers?: Qualifiers): Date | undefined {
     if (qualifiers) {
       const q = qualifiers[id];
       if (q && q[0] && q[0].datatype === "time" && q[0].datavalue) {
-        return dayjs(wikibaseTimeToDateObject((q[0].datavalue as TimeSnakDataValue).value));
+        return wikibaseTimeToDateObject((q[0].datavalue as TimeSnakDataValue).value);
       }
     }
     return undefined;

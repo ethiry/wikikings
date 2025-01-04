@@ -1,5 +1,5 @@
 import { WikiObject } from "@/models/wikiObject.ts";
-import { WikiData } from "../tools/wikiData.ts";
+import { WikiData } from "../tools/wikiDataClass.ts";
 import { QualifierId } from "@/common/enums.ts";
 import { ItemId, Qualifiers } from "npm:wikibase-sdk";
 

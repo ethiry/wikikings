@@ -2,7 +2,7 @@ import { Position } from "@/models/position.ts";
 import { StatementId } from "@/common/enums.ts";
 import { Item, ItemId, Qualifiers, WikibaseItemSnakDataValue, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { TimeBasedStatement } from "@/models/timeBasedStatement.ts";
-import { WikiData } from "@/tools/wikiData.ts";
+import { WikiData } from "@/tools/wikiDataClass.ts";
 import { Spouse } from "@/models/spouse.ts";
 import { isBefore } from "@/tools/date.ts";
 

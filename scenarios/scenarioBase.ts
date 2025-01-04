@@ -1,6 +1,6 @@
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
-import { WikiData } from "@/tools/wikiData.ts";
+import { WikiData } from "@/tools/wikiDataClass.ts";
 
 export class ContinuationData {
   public with: ItemId | WikiHuman;

@@ -1,6 +1,6 @@
 import { isItemId, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
-import { WikiData } from "@/tools/wikiData.ts";
+import { WikiData } from "@/tools/wikiDataClass.ts";
 import { Queue } from "@/tools/queue.ts";
 
 let startId: ItemId = "Q7742";

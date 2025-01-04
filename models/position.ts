@@ -1,6 +1,6 @@
 import { ItemId, Qualifiers } from "npm:wikibase-sdk";
 import { QualifierId } from "@/common/enums.ts";
-import { WikiData } from "@/tools/wikiData.ts";
+import { WikiData } from "@/tools/wikiDataClass.ts";
 import { TimeBasedStatement } from "./timeBasedStatement.ts";
 import { CsvLine } from "@/tools/export.ts";
 

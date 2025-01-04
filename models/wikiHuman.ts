@@ -2,7 +2,7 @@ import { Item, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { Gender, QualifierValue, StatementId } from "@/common/enums.ts";
 import { Position } from "./position.ts";
 import { WikiObject } from "./wikiObject.ts";
-import { WikiData } from "../tools/wikiData.ts";
+import { WikiData } from "../tools/wikiDataClass.ts";
 import { TimeBasedStatementHelper } from "./timeBasedStatementHelper.ts";
 import { Spouse } from "@/models/spouse.ts";
 import { CsvLine } from "@/tools/export.ts";

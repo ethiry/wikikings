@@ -1,7 +1,7 @@
 import { ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
 import { ContinuationData, ScenarioBase } from "./scenarioBase.ts";
-import { WikiData } from "@/tools/wikiData.ts";
+import { WikiData } from "@/tools/wikiDataClass.ts";
 
 export class Scenario2 extends ScenarioBase {
   constructor(language: WikimediaLanguageCode, depthLimit?: number) {
