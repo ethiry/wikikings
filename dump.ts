@@ -29,7 +29,7 @@ async function queueManager(): Promise<void> {
   let cpt = 0;
   while (true) {
     cpt++;
-    console.log(`${q.info()} cpt=${cpt} ${Math.trunc(Deno.memoryUsage().heapUsed / 1024 / 1024)}M`);
+    console.log(`${q.info()};cpt=${cpt};${Math.trunc(Deno.memoryUsage().heapUsed / 1024 / 1024)}M`);
     // console.log(`Queue size: ${q.size}`);
     if (cpt % 1000 === 0) {
       console.log("Timestamp", new Date().toISOString());
@@ -38,10 +38,10 @@ async function queueManager(): Promise<void> {
     if (id) {
       const wiki = await WikiData.getWikiObject(id, language);
       if (wiki instanceof WikiHuman) {
-        const continuationList = await wiki.continuationList(language);
+        const { priority, regular } = await wiki.continuationList();
         const origin = wiki.fromCache ? "cache" : "web";
-        console.log(`${wiki.toString()} [from ${origin}] with ${continuationList.length} continuation`);
-        q.enqueueAll(continuationList);
+        console.log(`${wiki.toString()} [from ${origin}] with ${priority.length}+${regular.length} continuation`);
+        q.enqueueAll(priority, regular);
       } else {
         console.log(`${id} is not a human`);
       }

@@ -60,7 +60,7 @@ export class WikiHuman extends WikiObject {
   }
 
   public get ignore(): boolean {
-    return this.age === undefined || (this.age < 10 && !this.isKing);
+    return !this.isKing && (this.age === undefined || this.age < 10);
   }
 
   public override toString(): string {
@@ -123,46 +123,48 @@ export class WikiHuman extends WikiObject {
     return 0;
   }
 
-  public continuationList(language: WikimediaLanguageCode): ItemId[] {
-    const result: ItemId[] = [];
+  public continuationList(): { priority: ItemId[]; regular: ItemId[] } {
+    const temp1 = new Set<ItemId>();
+    const temp2: ItemId[] = [];
 
-    // father && mother
-    if (this.fatherId) {
-      result.push(this.fatherId);
-    }
-    if (this.motherId) {
-      result.push(this.motherId);
-    }
+    if (!this.ignore) {
+      // predecessors and successors
+      this.reigns.forEach((r) => {
+        if (r.replaces) {
+          temp1.add(r.replaces);
+        }
+        if (r.replacedBy) {
+          temp1.add(r.replacedBy);
+        }
+      });
 
-    // siblings
-    // if (this.siblingsId) {
-    //   result.push(...this.siblingsId);
-    // }
-
-    // spouses
-    if (this.spouses) {
-      result.push(...this.spouses.map((s) => s.id));
-    }
-
-    // children
-    if (this.childrenId) {
-      result.push(...this.childrenId);
-    }
-
-    // predecessors
-    this.reigns.filter((r) => r.replaces).forEach((pred) => {
-      if (pred.replaces && result.filter((id) => id === pred.replaces).length === 0) {
-        result.push(pred.replaces);
+      // father && mother
+      if (this.fatherId) {
+        temp2.push(this.fatherId);
       }
-    });
-
-    // successors
-    this.reigns.filter((r) => r.replacedBy).forEach((succ) => {
-      if (succ.replacedBy && result.filter((id) => id === succ.replacedBy).length === 0) {
-        result.push(succ.replacedBy);
+      if (this.motherId) {
+        temp2.push(this.motherId);
       }
-    });
 
-    return result;
+      // siblings
+      // if (this.siblingsId) {
+      //   result.push(...this.siblingsId);
+      // }
+
+      // spouses
+      if (this.spouses) {
+        temp2.push(...this.spouses.map((s) => s.id));
+      }
+
+      // children
+      if (this.childrenId) {
+        temp2.push(...this.childrenId);
+      }
+    }
+
+    const priority = Array.from(temp1);
+    const regular = temp2.filter((id) => !priority.includes(id));
+
+    return { priority, regular };
   }
 }
