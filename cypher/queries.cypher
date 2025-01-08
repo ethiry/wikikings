@@ -22,3 +22,15 @@ RETURN a;
 MATCH (p:Person)-[:PARENT_OF*1..50]->(:Person { name:'Henri III' }),
 (p:Person)-[:PARENT_OF*1..50]->(:Person { name:'Henri IV' })
 RETURN p.name
+
+// Louis XIV's parents
+match (p:Person)-[r:PARENT_OF*1..50]->(louis14: Person {name: 'Louis XIV'})
+return p,r,louis14
+
+// count Louis XIV's parents
+match (p:Person)-[r:PARENT_OF*1..50]->(:Person {name: 'Louis XIV'})
+return count(r)
+
+// Louis XIV's predecessors
+match (p:Person)-[r:REPLACED_BY*1..50]->(louis14: Person {name: 'Louis XIV'})
+return p,r,louis14
