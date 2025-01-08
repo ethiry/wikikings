@@ -4,6 +4,7 @@ import { WikiData } from "@/tools/wikiDataClass.ts";
 import { Queue } from "@/tools/queue.ts";
 
 let startId: ItemId = "Q7742";
+let levelMax = 4;
 const language: WikimediaLanguageCode = "fr";
 
 if (Deno.args.length > 0) {
@@ -14,13 +15,20 @@ if (Deno.args.length > 0) {
   }
 }
 
+if (Deno.args.length > 1) {
+  levelMax = parseInt(Deno.args[1], 10);
+  if (isNaN(levelMax)) {
+    throw new Error(`${Deno.args[1]} is invalid levelMax`);
+  }
+}
+
 const q = new Queue<ItemId>();
 
 console.log("Start the queue ");
 setTimeout(queueManager, 100);
 console.log("Queue started");
 
-q.enqueue(startId);
+q.enqueue(startId, levelMax);
 
 // alert("Queue is running");
 console.log("DONE");
@@ -34,21 +42,24 @@ async function queueManager(): Promise<void> {
     if (cpt % 1000 === 0) {
       console.log("Timestamp", new Date().toISOString());
     }
-    const id = q.dequeue();
-    if (id) {
-      const wiki = await WikiData.getWikiObject(id, language);
+    const qi = q.dequeue();
+    if (qi) {
+      const wiki = await WikiData.getWikiObject(qi.data, language);
       if (wiki instanceof WikiHuman) {
         const { priority, regular } = await wiki.continuationList();
-        const origin = wiki.fromCache ? "cache" : "web";
-        console.log(`${wiki.toString()} [from ${origin}] with ${priority.length}+${regular.length} continuation`);
-        q.enqueueAll(priority, regular);
+        console.log(
+          `${wiki.toString()} <${
+            wiki.fromCache ? "cache" : "web"
+          }> (${qi.level}) with ${priority.length}+${regular.length} continuation`,
+        );
+        q.enqueueAll(priority, regular, qi.level);
       } else {
-        console.log(`${id} is not a human`);
+        console.log(`${qi.data} is not a human`);
       }
     } else {
       cpt++;
       console.log("Queue is empty");
-      await sleep(1000);
+      return;
     }
   }
 }
