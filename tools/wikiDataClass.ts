@@ -32,7 +32,7 @@ export class WikiData {
     } catch {
       const url = wbk.getEntities({
         ids: [id],
-        languages: [language], // returns all languages if not specified
+        // languages: [language], // returns all languages if not specified
         //      props: [ 'info', 'datatype', 'descriptions', 'labels', "claims", "sitelinks", "sitelinks/urls", ""], // returns all props if not specified
       });
       const { entities } = await fetch(url).then((res) => res.json());
