@@ -149,7 +149,14 @@ export class WikiData {
     return claim && claim.mainsnak.datatype === datatype && claim.mainsnak.snaktype === "value";
   }
 
-  private static entityCacheFile(id: ItemId): string {
-    return `${Config.cacheFolder}/${id}.json`;
+  public static entityCacheFile(id: ItemId): string {
+    const chunkSize = 3;
+    const chunks = [];
+    for (let i = 0, charsLength = id.length; i < charsLength; i += chunkSize) {
+      chunks.push(id.substring(i, i + chunkSize));
+    }
+    const path = chunks.join("/");
+    Deno.mkdirSync(`${Config.cacheFolder}/${path}`, { recursive: true });
+    return `${Config.cacheFolder}/${path}/${id}.json`;
   }
 }

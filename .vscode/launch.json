@@ -18,7 +18,10 @@
         "--inspect-wait",
         "--allow-all",
       ],
-      "attachSimplePort": 9229
+      "attachSimplePort": 9229,
+      "args": [
+        "2"
+      ]
     },
     {
       "request": "launch",

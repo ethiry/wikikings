@@ -1,5 +1,6 @@
 .DS_Store
 csv
+cache*
 wikidata*
 notes
 config.json
