@@ -22,6 +22,7 @@ export class Export {
   }
 
   public async saveScvFiles() {
+    Deno.mkdirSync(this.folder, { recursive: true });
     await this.saveHumans();
     await this.saveParents();
     await this.saveSpouses();
@@ -50,9 +51,11 @@ export class Export {
   private async saveSpouses() {
     const spouses = new Array<CsvLine>();
     this.humans.forEach((h) => {
-      h.spouses?.forEach((s) => {
-        spouses.push([h.id, s.id, s.start, s.end]);
-      });
+      if (h.gender === Gender.Male) {
+        h.spouses?.forEach((s) => {
+          spouses.push([h.id, s.id, s.start, s.end]);
+        });
+      }
     });
     await this.saveCsvFile("spouses", ["husbandId", "wifeId", "start", "end"], spouses);
   }

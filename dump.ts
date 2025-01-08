@@ -2,6 +2,8 @@ import { isItemId, ItemId, WikimediaLanguageCode } from "npm:wikibase-sdk";
 import { WikiHuman } from "@/models/wikiHuman.ts";
 import { WikiData } from "@/tools/wikiDataClass.ts";
 import { Queue } from "@/tools/queue.ts";
+import { Export } from "@/tools/export.ts";
+import { Config } from "@/tools/config.ts";
 
 let startId: ItemId = "Q7742";
 let levelMax = 4;
@@ -34,6 +36,7 @@ q.enqueue(startId, levelMax);
 console.log("DONE");
 
 async function queueManager(): Promise<void> {
+  const solution = new Map<ItemId, WikiHuman>();
   let cpt = 0;
   while (true) {
     cpt++;
@@ -46,6 +49,9 @@ async function queueManager(): Promise<void> {
     if (qi) {
       const wiki = await WikiData.getWikiObject(qi.data, language);
       if (wiki instanceof WikiHuman) {
+        if (!wiki.ignore && !solution.has(wiki.id)) {
+          solution.set(wiki.id, wiki);
+        }
         const { priority, regular } = await wiki.continuationList();
         console.log(
           `${wiki.toString()} <${
@@ -59,6 +65,9 @@ async function queueManager(): Promise<void> {
     } else {
       cpt++;
       console.log("Queue is empty");
+      const exporter = new Export(`${Config.outputFolder}/${startId}/${levelMax}`, solution);
+      exporter.saveScvFiles();
+      logSomeStats(solution);
       return;
     }
   }
@@ -66,4 +75,13 @@ async function queueManager(): Promise<void> {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+function logSomeStats(solution: Map<ItemId, WikiHuman>) {
+  const humans = Array.from(solution.values());
+  const kings = humans.filter((l) => l.isKing);
+
+  console.log("DONE");
+  console.log(`Humans   : ${solution.size}`);
+  console.log(`Kings    : ${kings.length}`);
 }

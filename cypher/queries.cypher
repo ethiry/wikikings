@@ -18,7 +18,7 @@ MATCH (a:Person)
 WHERE 'saint Louis' IN a.aliases
 RETURN a;
 
-// ancêtre commun d'Henri III et Henri IV
+// common ancester for Henri III and Henri IV
 MATCH (p:Person)-[:PARENT_OF*1..50]->(:Person { name:'Henri III' }),
 (p:Person)-[:PARENT_OF*1..50]->(:Person { name:'Henri IV' })
 RETURN p.name
