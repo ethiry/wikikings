@@ -4,27 +4,51 @@ import { WikiData } from "@/tools/wikiDataClass.ts";
 import { TimeBasedStatement } from "./timeBasedStatement.ts";
 import { CsvLine } from "@/tools/export.ts";
 
+type KingDomain = "France" | "United Kingdom" | "España" | "AutricheHongrie" | "Pologne";
+const KingPositions = new Map<ItemId, KingDomain>([
+  ["Q22923081", "France"],
+  ["Q18384454", "France"],
+  ["Q3439798", "France"],
+  ["Q3439814", "France"],
+  ["Q9134365", "United Kingdom"],
+  ["Q111722535", "United Kingdom"],
+  ["Q110324075", "United Kingdom"],
+  ["Q18810066", "United Kingdom"],
+  ["Q18810063", "United Kingdom"],
+  ["Q18810062", "United Kingdom"],
+  ["Q3847454", "España"],
+  ["Q58631963", "España"],
+  ["Q58005590", "España"],
+  ["Q58800860", "España"],
+  ["Q181765", "AutricheHongrie"],
+  ["Q6412254", "AutricheHongrie"],
+  ["Q45341328", "AutricheHongrie"],
+  ["Q166877", "AutricheHongrie"],
+  ["Q3273712", "Pologne"],
+]);
 export class Position extends TimeBasedStatement {
   public label: string;
   public replaces?: ItemId;
   public replacedBy?: ItemId;
-  public isKing: boolean;
+  public isKing = false;
+  public kingDomain?: KingDomain;
 
   public constructor(id: ItemId, label: string, qualifiers: Qualifiers) {
     super(id, qualifiers);
     this.label = label;
     this.replaces = WikiData.getItemQualifier(QualifierId.Replaces, qualifiers);
     this.replacedBy = WikiData.getItemQualifier(QualifierId.ReplacedBy, qualifiers);
-    this.isKing = Position.kingsPositions.includes(id);
+    if (KingPositions.has(id)) {
+      this.isKing = true;
+      this.kingDomain = KingPositions.get(id);
+    }
   }
 
   public static get csvHeaderLine(): string[] {
-    return ["positionId", "label", "isKing"];
+    return ["positionId", "label", "isKing", "domain"];
   }
 
   public get csvLine(): CsvLine {
-    return [this.id, this.label, this.isKing];
+    return [this.id, this.label, this.isKing, this.kingDomain ?? ""];
   }
-
-  private static kingsPositions = ["Q22923081", "Q18384454", "Q3439798", "Q3439814"]; // rois de France
 }

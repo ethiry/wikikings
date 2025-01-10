@@ -83,14 +83,18 @@ export class Export {
     const replacedBy = new Array<CsvLine>();
     this.humans.forEach((h) => {
       h.positions?.forEach((p) => {
-        if (p.isKing && p.end && p.replacedBy) {
-          replacedBy.push(
-            [h.id, p.label, p.end, p.replacedBy],
-          );
+        if (p.isKing && p.replacedBy) {
+          if (p.end) {
+            replacedBy.push(
+              [h.id, p.label, p.kingDomain, p.end, p.replacedBy],
+            );
+          } else {
+            console.log(`POSITION ${p.id} for ${h.label} (${h.id}) has no end date !!`);
+          }
         }
       });
     });
-    await this.saveCsvFile("replacedBy", ["id", "label", "date", "successorId"], replacedBy);
+    await this.saveCsvFile("replacedBy", ["id", "label", "domain", "date", "successorId"], replacedBy);
   }
 
   private async savePositions() {
@@ -101,7 +105,7 @@ export class Export {
         for (const position of human.positions) {
           positions.set(position.id, position.csvLine);
           if (position.isKing) {
-            kingPositionHolders.push([position.id, human.id]);
+            kingPositionHolders.push([position.id, human.id, position.start, position.end]);
           }
         }
       }
@@ -111,7 +115,7 @@ export class Export {
     allPositions.sort(this.internalPositionsComparer);
     await this.saveCsvFile("allPositions", Position.csvHeaderLine, allPositions);
     await this.saveCsvFile("kingPositions", Position.csvHeaderLine, allPositions.filter((p) => p[2] === true));
-    await this.saveCsvFile("kingPositionHolders", ["positionId", "holderId"], kingPositionHolders);
+    await this.saveCsvFile("kingPositionHolders", ["positionId", "holderId", "start", "end"], kingPositionHolders);
   }
 
   private internalPositionsComparer(a: CsvLine, b: CsvLine): number {
