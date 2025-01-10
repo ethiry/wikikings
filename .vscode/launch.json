@@ -11,7 +11,7 @@
       "program": "${workspaceFolder}/main.ts",
       "cwd": "${workspaceFolder}",
       "env": {},
-      "runtimeExecutable": "/Users/manu/.deno/bin/deno",
+      "runtimeExecutable": "deno",
       "runtimeArgs": [
         "run",
         "--unstable",
@@ -30,15 +30,16 @@
       "program": "${workspaceFolder}/dump.ts",
       "cwd": "${workspaceFolder}",
       "env": {},
-      "runtimeExecutable": "/Users/manu/.deno/bin/deno",
+      "runtimeExecutable": "deno",
       "runtimeArgs": [
         "run",
-        "--unstable",
         "--inspect-wait",
         "--allow-all",
       ],
       "args": [
-        "Q7742"
+        "-s", "Q7742",
+        "-l", "4",
+        "-L", "en",
       ],
       "attachSimplePort": 9229
     }

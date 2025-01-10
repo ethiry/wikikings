@@ -31,6 +31,22 @@ export class Export {
     await this.savePositions();
   }
 
+  public async writeFile(filename: string, lines: string[]) {
+    const output = await Deno.open(`${this.folder}/${filename}`, {
+      create: true,
+      write: true,
+      truncate: true,
+    });
+    const outputWriter = output.writable.getWriter();
+    await outputWriter.ready;
+
+    for (const line of lines) {
+      await this.writeLine(outputWriter, line);
+    }
+
+    await outputWriter.close();
+  }
+
   private async saveHumans() {
     await this.saveCsvFile("humans", WikiHuman.csvHeaderLine, this.humans.map((h) => h.csvLine));
   }
