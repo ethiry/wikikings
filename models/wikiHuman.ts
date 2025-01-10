@@ -53,14 +53,18 @@ export class WikiHuman extends WikiObject {
   }
 
   public get age(): number | undefined {
-    if (this.born && this.dead) {
-      return (this.dead.getTime() - this.born.getTime()) / 31557600000;
+    const end = (!this.dead && this.born && this.born.getFullYear() > 1900) ? new Date() : this.dead;
+    if (this.born && end) {
+      return (end.getTime() - this.born.getTime()) / 31557600000;
     }
     return undefined;
   }
 
   public get ignore(): boolean {
-    return !this.isKing && (this.age === undefined || this.age < 10);
+    if (this.isKing) {
+      return false;
+    }
+    return (this.age === undefined || this.age < 10);
   }
 
   public override toString(): string {
