@@ -4,27 +4,27 @@ import { WikiData } from "@/tools/wikiDataClass.ts";
 import { TimeBasedStatement } from "./timeBasedStatement.ts";
 import { CsvLine } from "@/tools/export.ts";
 
-type KingDomain = "France" | "United Kingdom" | "España" | "AutricheHongrie" | "Pologne";
+type KingDomain = "France" | "Brit" | "Iberico" | "AutricheHongrie" | "ÖsterUnga" | "Polska";
 const KingPositions = new Map<ItemId, KingDomain>([
   ["Q22923081", "France"],
   ["Q18384454", "France"],
   ["Q3439798", "France"],
   ["Q3439814", "France"],
-  ["Q9134365", "United Kingdom"],
-  ["Q111722535", "United Kingdom"],
-  ["Q110324075", "United Kingdom"],
-  ["Q18810066", "United Kingdom"],
-  ["Q18810063", "United Kingdom"],
-  ["Q18810062", "United Kingdom"],
-  ["Q3847454", "España"],
-  ["Q58631963", "España"],
-  ["Q58005590", "España"],
-  ["Q58800860", "España"],
-  ["Q181765", "AutricheHongrie"],
-  ["Q6412254", "AutricheHongrie"],
-  ["Q45341328", "AutricheHongrie"],
-  ["Q166877", "AutricheHongrie"],
-  ["Q3273712", "Pologne"],
+  ["Q9134365", "Brit"],
+  ["Q111722535", "Brit"],
+  ["Q110324075", "Brit"],
+  ["Q18810066", "Brit"],
+  ["Q18810063", "Brit"],
+  ["Q18810062", "Brit"],
+  ["Q3847454", "Iberico"],
+  ["Q58631963", "Iberico"],
+  ["Q58005590", "Iberico"],
+  ["Q58800860", "Iberico"],
+  ["Q181765", "ÖsterUnga"],
+  ["Q6412254", "ÖsterUnga"],
+  ["Q45341328", "ÖsterUnga"],
+  ["Q166877", "ÖsterUnga"],
+  ["Q3273712", "Polska"],
 ]);
 export class Position extends TimeBasedStatement {
   public label: string;
