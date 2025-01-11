@@ -2,7 +2,7 @@ MATCH ()-[r]->() DELETE r;
 MATCH (n) DETACH DELETE n; 
 
 LOAD CSV WITH HEADERS FROM 'file:///humans.csv' as row
-MERGE (p:Human { id:row.ID, name:row.name, king:toBoolean(row.isKing), gender:row.gender, born:coalesce(date(row.born), '0800-01-01'), dead:coalesce(date(row.dead),'2100-12-31'), aliases:split(row.aliases, '|') });
+MERGE (p:Human { id:row.ID, name:row.name, king:toBoolean(row.isKing), gender:row.gender, born:coalesce(date(row.born), '0800-01-01'), dead:coalesce(date(row.dead),'2100-12-31'), age:toFloat(row.age), aliases:split(row.aliases, '|') });
 
 LOAD CSV WITH HEADERS FROM  'file:///spouses.csv' as row
 MATCH (a:Human { id:row.husbandId })

@@ -7,7 +7,7 @@ import { formatDate, isBefore } from "@/tools/date.ts";
 const csvSeparator = ",";
 const csvExtension = "csv";
 
-export type CsvType = ItemId | string | boolean | Gender | Date | string[] | undefined;
+export type CsvType = ItemId | string | boolean | number | Gender | Date | string[] | undefined;
 export type CsvLine = CsvType[];
 
 export class Export {
@@ -19,10 +19,11 @@ export class Export {
     this.folder = folder;
     this.solution = solution;
     this.humans = Array.from(solution.values());
+
+    Deno.mkdirSync(this.folder, { recursive: true });
   }
 
   public async saveScvFiles() {
-    Deno.mkdirSync(this.folder, { recursive: true });
     await this.saveHumans();
     await this.saveParents();
     await this.saveSpouses();
