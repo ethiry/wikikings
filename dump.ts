@@ -55,9 +55,9 @@ async function queueManager(options: Options): Promise<void> {
       console.log("Queue is empty");
       const exporter = new Export(options.outputFolder, solution);
       await exporter.saveScvFiles();
-      console.log("DONE");
-      const counters = `totalQueued=${q.alreadyQueued.size} cpt=${cpt}`;
       const executionTime = getExecutionTime(startTime, endTime);
+      console.log(`DONE in ${executionTime}`);
+      const counters = `totalQueued=${q.alreadyQueued.size} cpt=${cpt}`;
       const stats = getSomeStats(solution);
       exporter.writeFile("report.txt", [counters, executionTime, stats]);
       console.log(stats);
@@ -66,7 +66,7 @@ async function queueManager(options: Options): Promise<void> {
   }
 }
 
-function sleep(ms: number): Promise<void> {
+function _sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
