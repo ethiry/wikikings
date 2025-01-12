@@ -64,7 +64,7 @@ export class WikiHuman extends WikiObject {
     if (this.isKing) {
       return false;
     }
-    return (this.age === undefined);
+    return (this.age === undefined || this.age < 10);
   }
 
   public override toString(): string {
@@ -130,26 +130,26 @@ export class WikiHuman extends WikiObject {
   }
 
   public continuationList(): { priority: ItemId[]; regular: ItemId[] } {
-    const temp1 = new Set<ItemId>();
-    const temp2: ItemId[] = [];
+    const prio = new Set<ItemId>();
+    const regu: ItemId[] = [];
 
     if (!this.ignore) {
       // predecessors and successors
       this.reigns.forEach((r) => {
         if (r.replaces) {
-          temp1.add(r.replaces);
+          prio.add(r.replaces);
         }
         if (r.replacedBy) {
-          temp1.add(r.replacedBy);
+          prio.add(r.replacedBy);
         }
       });
 
       // father && mother
       if (this.fatherId) {
-        temp2.push(this.fatherId);
+        regu.push(this.fatherId);
       }
       if (this.motherId) {
-        temp2.push(this.motherId);
+        regu.push(this.motherId);
       }
 
       // siblings
@@ -159,17 +159,17 @@ export class WikiHuman extends WikiObject {
 
       // spouses
       if (this.spouses) {
-        temp2.push(...this.spouses.map((s) => s.id));
+        regu.push(...this.spouses.map((s) => s.id));
       }
 
       // children
       if (this.childrenId) {
-        temp2.push(...this.childrenId);
+        regu.push(...this.childrenId);
       }
     }
 
-    const priority = Array.from(temp1);
-    const regular = temp2.filter((id) => !priority.includes(id));
+    const priority = Array.from(prio);
+    const regular = regu.filter((id) => !priority.includes(id));
 
     return { priority, regular };
   }
