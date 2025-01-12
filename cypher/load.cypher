@@ -16,7 +16,7 @@ MERGE (louisXVI)-[:REPLACED_BY]->(louisXVIII);
 LOAD CSV WITH HEADERS FROM  'file:///spouses.csv' as row
 MATCH (a:Human { id:row.husbandId })
 MATCH (b:Human { id:row.wifeId })
-MERGE (a)-[:SPOUSE_OF { from:coalesce(date(row.start), '0800-01-01'), to:coalesce(date(row.end), '2100-12-31') }]->(b);
+MERGE (a)-[:SPOUSE_OF { from:coalesce(date(row.start), '0800-01-01'), to:coalesce(date(row.end), '2100-12-31'), duration:toFloat(row.duration)}]->(b);
 
 LOAD CSV WITH HEADERS FROM 'file:///parents.csv' as row
 MATCH (p:Human { id:row.parentId })
@@ -39,4 +39,4 @@ MERGE (p:Position { id:row.positionId, label:row.label, domain:row.domain});
 LOAD CSV WITH HEADERS FROM  'file:///kingPositionHolders.csv' as row
 MATCH (h:Human { id:row.holderId })
 MATCH (p:Position { id:row.positionId })
-MERGE (p)-[:HELD_BY {from:date(row.start), to:coalesce(date(row.end),'2100-12-31')}]->(h);
+MERGE (p)-[:HELD_BY {label:row.label, domain:row.domain, from:date(row.start), to:coalesce(date(row.end),'2100-12-31'), duration:toFloat(row.duration)}]->(h);

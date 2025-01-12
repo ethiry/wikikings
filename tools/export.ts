@@ -70,11 +70,11 @@ export class Export {
     this.humans.forEach((h) => {
       if (h.gender === Gender.Male) {
         h.spouses?.forEach((s) => {
-          spouses.push([h.id, s.id, s.start, s.end]);
+          spouses.push([h.id, s.id, s.start, s.end, s.durationInYears]);
         });
       }
     });
-    await this.saveCsvFile("spouses", ["husbandId", "wifeId", "start", "end"], spouses);
+    await this.saveCsvFile("spouses", ["husbandId", "wifeId", "start", "end", "duration"], spouses);
   }
 
   private async saveSiblings() {
@@ -122,7 +122,15 @@ export class Export {
         for (const position of human.positions) {
           positions.set(position.id, position.csvLine);
           if (position.isKing) {
-            kingPositionHolders.push([position.id, human.id, position.start, position.end]);
+            kingPositionHolders.push([
+              position.id,
+              human.id,
+              position.label,
+              position.kingDomain,
+              position.start,
+              position.end,
+              position.durationInYears,
+            ]);
           }
         }
       }
@@ -132,7 +140,11 @@ export class Export {
     allPositions.sort(this.internalPositionsComparer);
     await this.saveCsvFile("allPositions", Position.csvHeaderLine, allPositions);
     await this.saveCsvFile("kingPositions", Position.csvHeaderLine, allPositions.filter((p) => p[2] === true));
-    await this.saveCsvFile("kingPositionHolders", ["positionId", "holderId", "start", "end"], kingPositionHolders);
+    await this.saveCsvFile(
+      "kingPositionHolders",
+      ["positionId", "holderId", "label", "domain", "start", "end", "duration"],
+      kingPositionHolders,
+    );
   }
 
   private internalPositionsComparer(a: CsvLine, b: CsvLine): number {
