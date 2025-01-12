@@ -16,7 +16,7 @@ console.log("Start the queue ");
 setTimeout(() => queueManager(options), 100);
 
 console.log("Enqueue", options.startIds);
-q.enqueueAll(options.startIds, [], options.levelMax);
+q.enqueueAll(options.startIds, options.levelMax);
 
 // alert("Queue is running");
 console.log("DONE");
@@ -46,7 +46,7 @@ async function queueManager(options: Options): Promise<void> {
             wiki.fromCache ? "cache" : "web"
           }> (${qi.level}) with ${priority.length}+${regular.length} continuation`,
         );
-        q.enqueueAll(priority, regular, qi.level);
+        q.enqueueAll(priority, qi.level, regular, wiki.isKing ? qi.level : qi.level - 1);
       } else {
         console.log(`${qi.data} is not a human`);
       }

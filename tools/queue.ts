@@ -35,12 +35,12 @@ export class Queue<T> {
     }
   }
 
-  enqueueAll(priority: T[], regular: T[], level: number): void {
+  enqueueAll(priority: T[], levelPrio: number, regular: T[] = [], levelRegu: number = 0): void {
     for (const item of priority) {
-      this.enqueue(item, level, true);
+      this.enqueue(item, levelPrio, true);
     }
     for (const item of regular) {
-      this.enqueue(item, level - 1, false);
+      this.enqueue(item, levelRegu, false);
     }
   }
 
