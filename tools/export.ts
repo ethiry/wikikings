@@ -56,13 +56,13 @@ export class Export {
     const parents = new Array<CsvLine>();
     this.humans.forEach((h) => {
       if (h.fatherId) {
-        parents.push([h.fatherId, h.id]);
+        parents.push([h.fatherId, h.id, "father"]);
       }
       if (h.motherId) {
-        parents.push([h.motherId, h.id]);
+        parents.push([h.motherId, h.id, "mother"]);
       }
     });
-    await this.saveCsvFile("parents", ["parentId", "childId"], parents);
+    await this.saveCsvFile("parents", ["parentId", "childId", "type"], parents);
   }
 
   private async saveSpouses() {
@@ -177,7 +177,7 @@ export class Export {
       if (isItemId(item) || item.length === 1) {
         return item;
       } else {
-        return `"${item}"`;
+        return `"${item.replaceAll('"', '""')}"`;
       }
     }
     if (item instanceof Date) {
@@ -190,7 +190,7 @@ export class Export {
       return item ? "true" : "false";
     }
 
-    return item;
+    return item.toString();
   }
 
   private async writeLine(outputWriter: WritableStreamDefaultWriter<Uint8Array>, line: string) {

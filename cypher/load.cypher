@@ -1,8 +1,17 @@
+
 MATCH ()-[r]->() DELETE r;
 MATCH (n) DETACH DELETE n; 
 
 LOAD CSV WITH HEADERS FROM 'file:///humans.csv' as row
 MERGE (p:Human { id:row.ID, name:row.name, king:toBoolean(row.isKing), gender:row.gender, born:coalesce(date(row.born), '0800-01-01'), dead:coalesce(date(row.dead),'2100-12-31'), age:toFloat(row.age), aliases:split(row.aliases, '|') });
+
+MATCH (h:Human {gender:'M'}) SET h:Man;
+MATCH (h:Human {gender:'F'}) SET h:Woman;
+MATCH (h:Human {king:true}) SET h:King;
+
+// little trick
+MATCH (louisXVI:Human {id:'Q7732'}),(louisXVIII:Human {id:'Q7750'}) 
+MERGE (louisXVI)-[:REPLACED_BY]->(louisXVIII);
 
 LOAD CSV WITH HEADERS FROM  'file:///spouses.csv' as row
 MATCH (a:Human { id:row.husbandId })
@@ -12,7 +21,7 @@ MERGE (a)-[:SPOUSE_OF { from:coalesce(date(row.start), '0800-01-01'), to:coalesc
 LOAD CSV WITH HEADERS FROM 'file:///parents.csv' as row
 MATCH (p:Human { id:row.parentId })
 MATCH (c:Human { id:row.childId })
-MERGE (p)-[:PARENT_OF]->(c);
+MERGE (p)-[:PARENT_OF {type:row.type}]->(c);
 
 LOAD CSV WITH HEADERS FROM  'file:///siblings.csv' as row
 MATCH (a:Human { id:row.olderId })
