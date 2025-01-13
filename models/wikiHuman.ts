@@ -64,7 +64,7 @@ export class WikiHuman extends WikiObject {
     if (this.isKing) {
       return false;
     }
-    return (this.age === undefined || this.age < 10);
+    return (this.age === undefined);
   }
 
   public override toString(): string {
