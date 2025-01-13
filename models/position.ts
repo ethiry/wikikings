@@ -4,18 +4,18 @@ import { WikiData } from "@/tools/wikiDataClass.ts";
 import { TimeBasedStatement } from "./timeBasedStatement.ts";
 import { CsvLine } from "@/tools/export.ts";
 
-type KingDomain = "France" | "Brit" | "Iberico" | "AutricheHongrie" | "ÖsterUnga" | "Polska";
+type KingDomain = "France" | "Britain" | "Iberico" | "ÖsterUnga" | "Polska";
 const KingPositions = new Map<ItemId, KingDomain>([
   ["Q22923081", "France"],
   ["Q18384454", "France"],
   ["Q3439798", "France"],
   ["Q3439814", "France"],
-  ["Q9134365", "Brit"],
-  ["Q111722535", "Brit"],
-  ["Q110324075", "Brit"],
-  ["Q18810066", "Brit"],
-  ["Q18810063", "Brit"],
-  ["Q18810062", "Brit"],
+  ["Q9134365", "Britain"],
+  ["Q111722535", "Britain"],
+  ["Q110324075", "Britain"],
+  ["Q18810066", "Britain"],
+  ["Q18810063", "Britain"],
+  ["Q18810062", "Britain"],
   ["Q3847454", "Iberico"],
   ["Q58631963", "Iberico"],
   ["Q58005590", "Iberico"],
@@ -26,6 +26,16 @@ const KingPositions = new Map<ItemId, KingDomain>([
   ["Q166877", "ÖsterUnga"],
   ["Q3273712", "Polska"],
 ]);
+
+/*
+depending on time frame:
+Britain: England, Ireland, Scotland, United-Kingdom
+France: Roi des Francs, Roi de France, Roi de France et de Navarre, Roi des Français
+Iberico: Aragon, Castille, Spain
+ÖsterUnga: Austria, Bohême, Hongrie, Austria-Hungary
+Polska: Poland
+*/
+
 export class Position extends TimeBasedStatement {
   public label: string;
   public replaces?: ItemId;
