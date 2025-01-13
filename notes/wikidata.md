@@ -5,21 +5,18 @@ entity   Q https://www.wikidata.org/wiki/{ID}
 
 Entities are entries in [Wikidata](https://www.wikidata.org).
 
-In this project, most of those represent a Human (example: [Louis XIV: Q7742](https://www.wikidata.org/wiki/Q7742)), but some entries are values for properties.
+In this project, most of those represent a Human (example: [Louis XIV: Q7742](https://www.wikidata.org/wiki/Q7742)), but some entries are values for properties (see below).
 
-example:
+Each entity has:
+* an item identifier (Q..)
+* a label (in several languages)
+* a description (in several languages)
+* some aliases
+* a list of **statements**
 
-|id|meaning|used by|
-|--|-------|-------|
-|Q5|[Human](https://www.wikidata.org/wiki/Q5)|P31|
-|Q6581072|[Female](https://www.wikidata.org/wiki/Q6581072)|P21|
-|Q6581097|[Male](https://www.wikidata.org/wiki/Q6581097)|P21|
-
-=> see [enum QualifierValue](https://github.com/ethiry/wikikings/blob/9c8970cd9585444e667e5106068c14d6baf210ee/common/enums.ts#L41)
+A statement is a property with a value and potentially qualifiers, depending on the property.
 
 # Properties and Qualifiers
-
-Each entity has a list of propeties.
 
 property P https://www.wikidata.org/wiki/Property:{ID}
 
@@ -44,13 +41,21 @@ some properties:
 |P570|[date of death](https://www.wikidata.org/wiki/Property:P570)|
 |P3373|[sibling](https://www.wikidata.org/wiki/Property:P3373)|
 
-=> see [enum StatemenId](https://github.com/ethiry/wikikings/blob/9c8970cd9585444e667e5106068c14d6baf210ee/common/enums.ts#L19)
+=> see [enum StatementId](https://github.com/ethiry/wikikings/blob/9c8970cd9585444e667e5106068c14d6baf210ee/common/enums.ts#L19)
 
 All properties have a value of a certain type, such as 
 * a value entity (identified by Q...) for example for P22 (father) or P21 (gender)
 * a date for example for P569 (date of birth)
 
 Example of generic entities used as values for properties
+
+|id|meaning|used by|
+|--|-------|-------|
+|Q5|[Human](https://www.wikidata.org/wiki/Q5)|P31|
+|Q6581072|[Female](https://www.wikidata.org/wiki/Q6581072)|P21|
+|Q6581097|[Male](https://www.wikidata.org/wiki/Q6581097)|P21|
+
+=> see [enum QualifierValue](https://github.com/ethiry/wikikings/blob/9c8970cd9585444e667e5106068c14d6baf210ee/common/enums.ts#L41)
 
 
 Some properties can have one or more qualifiers as well. Qualifiers are properties (identified by P..) with values and properties.
