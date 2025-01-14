@@ -50,6 +50,35 @@ CALL apoc.path.subgraphAll(p, {
 YIELD nodes, relationships
 RETURN nodes, relationships;
 
+// add mothers (UNWIND-COLLECT)
+MATCH (p:Human {id: "Q7771"})
+CALL apoc.path.subgraphAll(p, {
+  relationshipFilter: "<PARENT_OF|<REPLACED_BY",
+  labelFilter: "-Woman",
+  minLevel: 0,
+  maxLevel: 32
+})
+YIELD nodes, relationships
+WITH nodes, relationships
+UNWIND nodes as n
+MATCH (m:Man)<-[:PARENT_OF]-(mother:Woman) where m in nodes
+RETURN nodes, relationships, collect(mother);
+
+// add wifes
+MATCH (p:Human {id: "Q7771"})
+CALL apoc.path.subgraphAll(p, {
+  relationshipFilter: "<PARENT_OF|<REPLACED_BY",
+  labelFilter: "-Woman",
+  minLevel: 0,
+  maxLevel: 32
+})
+YIELD nodes, relationships
+WITH nodes, relationships
+UNWIND nodes as n
+MATCH (mother:Woman)-[:PARENT_OF]->(m:Man) where m in nodes
+MATCH (m:Man)-[:SPOUSE_OF]->(wife:Woman) where m in nodes
+RETURN nodes, relationships, collect(mother), collect(wife);
+
 // Henri III and Henri IV common ancestor
 MATCH 
     (:Human { id:"Q53448" })<-[:PARENT_OF* {type:'father'}]-(p:Human)-[:PARENT_OF* {type:'father'}]->(:Human { id:"Q936976" })
