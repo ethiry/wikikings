@@ -1,15 +1,15 @@
 // simple: date
-MATCH (n:Person)
+MATCH (n:Human)
 WHERE n.dead<date('1400-01-01')
 RETURN n;
 
 // simple: king
-MATCH (n:Person)
+MATCH (n:Human)
 WHERE n.king
 RETURN n;
 
 // simple: alias
-MATCH (a:Person)
+MATCH (a:Human)
 WHERE 'saint Louis' IN a.aliases
 RETURN a;
 
@@ -116,8 +116,8 @@ RETURN nodes, relationships;
 // search for all king Louis
 match (h:Human) where h.name starts with 'Louis' and h.king=true return h.name, h.id, h.aliases order by h.name
 
-// search for Henri III
-match (h:Human) where h.name contains 'Henri III' return h.name, h.id, h.aliases
+// search for Charles III
+match (h:Human) where h.name contains 'Charles III' return h.name, h.id, h.aliases
 
 // search for Henri III (regex)
 match (h:Human) where h.name =~ 'Henri III.*' return h.name, h.id, h.aliases
@@ -130,3 +130,14 @@ return *
 // the longest reigns
 match (:Position)-[r:HELD_BY]->(h:Human)
 return h.id,h.name,h.age,r.label,r.duration order by r.duration desc limit 10
+
+// kings in 2 domains
+match (p1:Position)-[h1:HELD_BY]->(x:King)<-[h2:HELD_BY]-(p2:Position)
+where h1.domain <> h2.domain
+return *
+
+// who was king on 1789-07-14
+WITH date('1789-07-14') AS theDate
+match (k:King)-[h:HELD_BY where h.from < theDate and theDate < h.to]-(p:Position)
+return k.name,p.label,h.from,h.to
+order by k.name
